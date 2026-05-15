@@ -3,31 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador Automotivo Ultimate</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Dashboard Pro - Realismo Extremo</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
 
 :root {
-  --bg-dark: #050505;
-  --panel-bg: #0a0a0c;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  
-  /* Cores reais de LED automotivo */
+  --bg-dark: #020202;
   --led-red: #ff2a2a;
   --led-amber: #ffaa00;
   --led-green: #00ff66;
   --led-blue: #00aaff;
-  
-  --led-off: rgba(255, 255, 255, 0.05);
+  --led-off: rgba(255, 255, 255, 0.03);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
 
 body {
   background: var(--bg-dark);
-  background-image: radial-gradient(circle at 50% 0%, #1a1a24 0%, #000 70%);
+  background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000 80%);
   color: #fff;
   font-family: 'Rajdhani', sans-serif;
   height: 100vh;
@@ -35,403 +28,173 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
-/* ===== PAINEL PRINCIPAL (HUD) ===== */
 .dashboard {
-  width: 95%;
-  max-width: 1000px;
-  background: linear-gradient(145deg, #111, #080808);
+  width: 90%;
+  max-width: 900px;
+  background: #0a0a0c;
   border-radius: 40px;
-  border: 1px solid var(--glass-border);
-  box-shadow: 
-    0 30px 60px rgba(0,0,0,0.9),
-    inset 0 2px 10px rgba(255,255,255,0.05),
-    inset 0 -10px 20px rgba(0,0,0,0.8);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.02);
   padding: 40px;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Efeito de vidro por cima do painel */
-.dashboard::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 40px; pointer-events: none;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%);
-}
-
-/* ===== DISPLAY CENTRAL (COMPUTADOR DE BORDO) ===== */
 .center-display {
   width: 100%;
-  max-width: 600px;
-  height: 180px;
-  background: #020202;
-  border: 2px solid #1a1a1a;
-  border-radius: 20px;
+  max-width: 500px;
+  height: 150px;
+  background: #000;
+  border: 1px solid #1a1a1a;
+  border-radius: 15px;
   margin-bottom: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
   box-shadow: inset 0 0 30px rgba(0,0,0,1);
-  overflow: hidden;
-}
-
-.scanline {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0), rgba(255,255,255,0.05));
-  background-size: 100% 4px; pointer-events: none; z-index: 10;
-}
-
-.game-status {
-  font-family: 'Orbitron', sans-serif;
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-  position: absolute;
-  top: 15px;
-  color: #555;
-  font-size: 14px;
-  letter-spacing: 2px;
-}
-
-.score-glow { color: var(--led-blue); text-shadow: 0 0 10px var(--led-blue); }
-.lives-glow { color: var(--led-red); text-shadow: 0 0 10px var(--led-red); }
-
-.prompt-text {
-  font-size: 24px;
-  text-align: center;
-  z-index: 5;
-  transition: 0.3s;
 }
 
 .prompt-target {
   font-family: 'Orbitron', sans-serif;
-  font-size: 32px;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 15px rgba(255,255,255,0.5);
-  margin-top: 5px;
-  text-transform: uppercase;
-  z-index: 5;
+  font-size: 28px;
+  color: var(--led-amber);
+  text-shadow: 0 0 15px var(--led-amber);
 }
 
-/* ===== GRID DE LUZES ===== */
 .lights-grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 15px;
-  width: 100%;
-  position: relative;
-  z-index: 5;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
+/* ESTILO DO BOTÃO (SLOT) */
 .light-slot {
-  aspect-ratio: 1;
+  width: 80px;
+  height: 80px;
   background: #080808;
+  border: 1px solid #151515;
   border-radius: 12px;
-  border: 1px solid #1a1a1a;
-  box-shadow: inset 0 5px 10px rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
   cursor: pointer;
-  color: var(--led-off);
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
+  transition: 0.2s;
 }
 
-.light-slot::before {
-  content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-  pointer-events: none;
-}
-
-.light-slot:hover { transform: scale(1.05); background: #111; }
-.light-slot:active { transform: scale(0.95); }
-
-/* ESTADOS DAS LUZES (ACESA) */
-.light-slot.on-red {
-  color: var(--led-red);
-  text-shadow: 0 0 15px var(--led-red), 0 0 30px var(--led-red);
-  background: #1a0000; border-color: #4d0000;
-}
-.light-slot.on-amber {
-  color: var(--led-amber);
-  text-shadow: 0 0 15px var(--led-amber), 0 0 30px var(--led-amber);
-  background: #1a1100; border-color: #4d3300;
-}
-.light-slot.on-green {
-  color: var(--led-green);
-  text-shadow: 0 0 15px var(--led-green), 0 0 30px var(--led-green);
-  background: #001a0a; border-color: #004d1f;
-}
-.light-slot.on-blue {
-  color: var(--led-blue);
-  text-shadow: 0 0 15px var(--led-blue), 0 0 30px var(--led-blue);
-  background: #00111a; border-color: #00334d;
-}
-
-/* Animação de piscar para erro */
-@keyframes flashError { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-.error-flash { animation: flashError 0.2s infinite; }
-
-/* ===== BOTÃO DE START ===== */
-.btn-engine {
-  margin-top: 40px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #222, #000);
-  border: 4px solid #333;
-  color: #ff3333;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
-  font-size: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,1);
+/* ESTILO DO ÍCONE (SVG) */
+.light-slot svg {
+  width: 50%;
+  height: 50%;
+  fill: var(--led-off);
   transition: 0.3s;
-  position: relative;
-  overflow: hidden;
 }
 
-.btn-engine::after {
-  content: 'ENGINE';
-  font-size: 10px; color: #777; margin-top: 5px; letter-spacing: 2px;
-}
+/* EFEITOS DE LUZ ACESA */
+.on-red svg { fill: var(--led-red); filter: drop-shadow(0 0 8px var(--led-red)) drop-shadow(0 0 15px var(--led-red)); }
+.on-amber svg { fill: var(--led-amber); filter: drop-shadow(0 0 8px var(--led-amber)) drop-shadow(0 0 15px var(--led-amber)); }
+.on-green svg { fill: var(--led-green); filter: drop-shadow(0 0 8px var(--led-green)) drop-shadow(0 0 15px var(--led-green)); }
 
-.btn-engine:hover {
-  border-color: #ff3333;
-  color: #ffaaaa;
-  box-shadow: 0 0 30px rgba(255,51,51,0.4), inset 0 0 20px rgba(255,51,51,0.2);
+.btn-engine {
+  margin-top: 30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #331111, #110000);
+  border: 4px solid #222;
+  color: #fff;
+  font-family: 'Orbitron';
+  font-size: 12px;
+  cursor: pointer;
 }
-
-.btn-engine:active { transform: scale(0.95); }
 
 .btn-engine.running {
   border-color: var(--led-red);
-  color: #fff;
-  text-shadow: 0 0 10px #fff;
-  box-shadow: 0 0 50px rgba(255,51,51,0.6), inset 0 0 30px rgba(255,51,51,0.5);
-  animation: pulseEngine 2s infinite;
-}
-
-@keyframes pulseEngine {
-  0%, 100% { box-shadow: 0 0 50px rgba(255,51,51,0.6), inset 0 0 30px rgba(255,51,51,0.5); }
-  50% { box-shadow: 0 0 30px rgba(255,51,51,0.3), inset 0 0 15px rgba(255,51,51,0.3); }
-}
-
-/* Telas de Fim de Jogo */
-.overlay-msg {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8); z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  backdrop-filter: blur(5px);
-  opacity: 0; pointer-events: none; transition: 0.5s;
-}
-.overlay-msg.show { opacity: 1; pointer-events: all; }
-.overlay-title { font-family: 'Orbitron'; font-size: 50px; margin-bottom: 20px; }
-.overlay-btn { 
-  padding: 15px 30px; font-family: 'Orbitron'; font-size: 18px; 
-  background: #222; color: #fff; border: 1px solid #555; cursor: pointer; border-radius: 8px;
-}
-.overlay-btn:hover { background: #333; }
-
-@media (max-width: 768px) {
-  .lights-grid { grid-template-columns: repeat(4, 1fr); }
-  .dashboard { padding: 20px; }
-  .light-slot { font-size: 22px; }
-  .prompt-target { font-size: 22px; }
+  box-shadow: 0 0 30px rgba(255,0,0,0.5);
 }
 </style>
 </head>
 <body>
 
 <div class="dashboard">
-  
   <div class="center-display">
-    <div class="scanline"></div>
-    <div class="game-status">
-      <div>SCORE: <span id="scoreTxt" class="score-glow">0</span></div>
-      <div>HP: <span id="livesTxt" class="lives-glow">❤❤❤</span></div>
-    </div>
-    
-    <div class="prompt-text" id="promptText" style="color: #666;">SISTEMA OFFLINE</div>
-    <div class="prompt-target" id="promptTarget">PRESSIONE START</div>
+    <div id="promptText" style="color: #444; font-size: 14px;">STATUS DO SISTEMA</div>
+    <div class="prompt-target" id="promptTarget">SISTEMA OFF</div>
   </div>
 
   <div class="lights-grid" id="grid">
     </div>
-
 </div>
 
-<button class="btn-engine" id="btnStart" onclick="startSystem()">START</button>
-
-<div class="overlay-msg" id="gameOverScreen">
-  <div class="overlay-title" style="color: var(--led-red); text-shadow: 0 0 20px var(--led-red);">FALHA NO MOTOR</div>
-  <button class="overlay-btn" onclick="location.reload()">REINICIAR DIAGNÓSTICO</button>
-</div>
-
-<div class="overlay-msg" id="winScreen">
-  <div class="overlay-title" style="color: var(--led-green); text-shadow: 0 0 20px var(--led-green);">SISTEMA 100% OK</div>
-  <button class="overlay-btn" onclick="location.reload()">NOVO TESTE</button>
-</div>
+<button class="btn-engine" id="btnStart" onclick="startSystem()">START ENGINE</button>
 
 <script>
-// Banco de Dados das Luzes (Ícones Vetoriais Perfeitos)
+// ÍCONES REAIS EM SVG
+const icons = {
+  engine: `<svg viewBox="0 0 512 512"><path d="M495.9 166.6c-3.1 10.5-14.2 16.5-24.7 13.4s-16.5-14.2-13.4-24.7l12.9-43.7c3.1-10.5 14.2-16.5 24.7-13.4s16.5 14.2 13.4 24.7l-12.9 43.7zM64 352c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32H96V128c0-17.7 14.3-32 32-32h64c17.7 0 32 14.3 32 32v32h128V128c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32v121.1c25.4 12.1 42.1 36.6 42.1 64.9V352c0 17.7-14.3 32-32 32H64zM160 320a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>`,
+  
+  tpms: `<svg viewBox="0 0 512 512"><path d="M128 448c-35.3 0-64-28.7-64-64v-64c0-106 86-192 192-192s192 86 192 192v64c0 35.3-28.7 64-64 64H128zm128-288c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32s32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm0 192a24 24 0 1 0 0 48 24 24 0 1 0 0-48z"/><path d="M448 352h32c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32h-32v-96zM32 352h32v96H32c-17.7 0-32-14.3-32-32v-32c0-17.7 14.3-32 32-32z" opacity="0.2"/></svg>`,
+  
+  steering: `<svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.3-208-208S141.3 48 256 48s208 93.3 208 208s-93.3 208-208 208zM256 128c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32s32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm0 192a24 24 0 1 0 0 48 24 24 0 1 0 0-48z"/></svg>`,
+  
+  neblina: `<svg viewBox="0 0 512 512"><path d="M0 192c0-17.7 14.3-32 32-32H192c17.7 0 32 14.3 32 32v128c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V192zM352 160c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H352zm0 128c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H352z"/></svg>`
+};
+
 const DB = [
-  { id: 'engine', icon: 'fa-triangle-exclamation', color: 'amber', name: 'Check Engine' },
-  { id: 'oil', icon: 'fa-oil-can', color: 'red', name: 'Pressão do Óleo' },
-  { id: 'battery', icon: 'fa-car-battery', color: 'red', name: 'Bateria / Alternador' },
-  { id: 'temp', icon: 'fa-temperature-half', color: 'red', name: 'Temperatura' },
-  { id: 'brake', icon: 'fa-circle-exclamation', color: 'red', name: 'Freio de Mão' },
-  { id: 'abs', icon: 'fa-truck-monster', color: 'amber', name: 'ABS' }, // Aproximação visual
-  { id: 'airbag', icon: 'fa-user-shield', color: 'red', name: 'Airbag' },
-  { id: 'fuel', icon: 'fa-gas-pump', color: 'amber', name: 'Combustível Baixo' },
-  { id: 'highbeam', icon: 'fa-lightbulb', color: 'blue', name: 'Farol Alto' },
-  { id: 'fog', icon: 'fa-smog', color: 'green', name: 'Farol de Neblina' },
-  { id: 'doors', icon: 'fa-door-open', color: 'red', name: 'Porta Aberta' },
-  { id: 'seatbelt', icon: 'fa-user-slash', color: 'red', name: 'Cinto de Segurança' },
-  { id: 'washer', icon: 'fa-fill-drip', color: 'amber', name: 'Água do Para-brisa' },
-  { id: 'tpms', icon: 'fa-compress', color: 'amber', name: 'Pressão do Pneu' },
-  { id: 'steering', icon: 'fa-dharmachakra', color: 'amber', name: 'Direção Elétrica' },
-  { id: 'traction', icon: 'fa-car-burst', color: 'amber', name: 'Controle de Tração' }
+  { id: 'engine', icon: icons.engine, color: 'amber', name: 'CHECK ENGINE' },
+  { id: 'tpms', icon: icons.tpms, color: 'amber', name: 'PRESSÃO PNEU' },
+  { id: 'steering', icon: icons.steering, color: 'amber', name: 'DIREÇÃO' },
+  { id: 'neblina', icon: icons.neblina, color: 'green', name: 'NEBLINA' }
 ];
 
-// Áudio Sintetizado (Zero dependências externas)
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
-function playTone(freq, type, duration) {
-  if(ctx.state === 'suspended') ctx.resume();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = type; osc.frequency.value = freq;
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start();
-  gain.gain.setValueAtTime(0.1, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-  osc.stop(ctx.currentTime + duration);
-}
-
-// Lógica do Jogo
 let isRunning = false;
-let score = 0;
-let lives = 3;
 let currentTarget = null;
-let remaining = [...DB];
-
 const grid = document.getElementById('grid');
 
-// Renderiza os botões
-DB.forEach((light, index) => {
+DB.forEach(light => {
   const div = document.createElement('div');
   div.className = 'light-slot';
   div.id = `slot-${light.id}`;
-  // Gambiarra pro ícone do ABS ficar escrito "ABS"
-  if(light.id === 'abs') div.innerHTML = '<span style="font-family:sans-serif;font-size:16px;font-weight:bold;">ABS</span>';
-  else div.innerHTML = `<i class="fa-solid ${light.icon}"></i>`;
-  
+  div.innerHTML = light.icon;
   div.onclick = () => checkAnswer(light);
   grid.appendChild(div);
 });
 
-async function startSystem() {
-  if (isRunning) return;
+function startSystem() {
+  if(isRunning) return;
   isRunning = true;
   document.getElementById('btnStart').classList.add('running');
   
-  // Efeito de virar a chave (Todas as luzes acendem)
-  playTone(800, 'square', 0.1);
-  setTimeout(() => playTone(1200, 'square', 0.2), 150);
-
-  document.getElementById('promptText').innerText = "SYSTEM BOOT...";
-  document.getElementById('promptTarget').innerText = "DIAGNOSTIC TEST";
-  document.getElementById('promptTarget').style.color = "#fff";
-
+  // Teste de lâmpadas (Acende tudo e apaga)
   DB.forEach(l => document.getElementById(`slot-${l.id}`).classList.add(`on-${l.color}`));
-
-  // Desliga após 2 segundos e começa o jogo
+  
   setTimeout(() => {
     DB.forEach(l => document.getElementById(`slot-${l.id}`).classList.remove(`on-${l.color}`));
     nextQuestion();
-  }, 2000);
+  }, 1500);
 }
 
 function nextQuestion() {
-  if (lives <= 0) return gameOver();
-  if (remaining.length === 0) return winGame();
-
-  // Sorteia uma luz que ainda não foi
-  const randIdx = Math.floor(Math.random() * remaining.length);
-  currentTarget = remaining[randIdx];
-  
-  document.getElementById('promptText').innerText = "ENCONTRE A LUZ:";
-  document.getElementById('promptText').style.color = "#00aaff";
-  document.getElementById('promptTarget').innerText = currentTarget.name;
+  const rand = DB[Math.floor(Math.random() * DB.length)];
+  currentTarget = rand;
+  document.getElementById('promptTarget').innerText = rand.name;
 }
 
-function checkAnswer(clickedLight) {
-  if (!isRunning || !currentTarget) return;
-
-  const slot = document.getElementById(`slot-${clickedLight.id}`);
-
-  if (clickedLight.id === currentTarget.id) {
-    // ACERTOU
-    playTone(600, 'sine', 0.1);
-    setTimeout(() => playTone(900, 'sine', 0.2), 100);
-    
-    slot.classList.add(`on-${clickedLight.color}`);
-    score += 100;
-    document.getElementById('scoreTxt').innerText = score;
-    
-    // Remove da lista
-    remaining = remaining.filter(l => l.id !== currentTarget.id);
-    currentTarget = null;
-    
-    document.getElementById('promptTarget').innerText = "CORRETO!";
+function checkAnswer(clicked) {
+  if(!isRunning || !currentTarget) return;
+  
+  if(clicked.id === currentTarget.id) {
+    document.getElementById(`slot-${clicked.id}`).classList.add(`on-${clicked.color}`);
     document.getElementById('promptTarget').style.color = "var(--led-green)";
-    
-    setTimeout(nextQuestion, 1000);
-  } else {
-    // ERROU
-    playTone(150, 'sawtooth', 0.4);
-    slot.classList.add('on-red', 'error-flash');
-    
-    lives--;
-    let heartStr = "";
-    for(let i=0; i<lives; i++) heartStr += "❤";
-    document.getElementById('livesTxt').innerText = heartStr || "0";
-
     setTimeout(() => {
-      slot.classList.remove('on-red', 'error-flash');
-      if (lives <= 0) gameOver();
-    }, 800);
+      document.getElementById('promptTarget').style.color = "var(--led-amber)";
+      nextQuestion();
+    }, 1000);
   }
 }
-
-function gameOver() {
-  currentTarget = null;
-  playTone(100, 'sawtooth', 1);
-  document.getElementById('gameOverScreen').classList.add('show');
-}
-
-function winGame() {
-  currentTarget = null;
-  playTone(400, 'sine', 0.2);
-  setTimeout(() => playTone(600, 'sine', 0.2), 200);
-  setTimeout(() => playTone(800, 'sine', 0.4), 400);
-  document.getElementById('winScreen').classList.add('show');
-}
 </script>
-
 </body>
 </html>
