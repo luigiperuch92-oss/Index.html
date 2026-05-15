@@ -3,106 +3,433 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador - Luzes Reais (CSS Sprite)</title>
+<title>Simulador Automotivo Ultimate</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
 
-*{margin:0;padding:0;box-sizing:border-box;outline:none;}
-body{
-  background:#020202; font-family:'Rajdhani',sans-serif; color:#eee;
-  min-height:100vh; display:flex; flex-direction:column; align-items:center;
-  padding:20px;
-}
-
-.header{
-  font-family:'Orbitron',monospace; font-size:14px; letter-spacing:4px;
-  color:#c8860a; margin-bottom:20px;
-}
-
-.lights-panel{
-  display:flex; flex-wrap:wrap; gap:10px; max-width: 800px; justify-content:center;
-  background: #111; padding: 20px; border-radius: 10px; border: 1px solid #333;
-}
-
-.light-btn{
-  width: 50px; height: 50px;
-  background: #000; border: 1px solid #222; border-radius: 8px;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition: 0.3s;
-}
-
-/* ===== TÉCNICA CSS SPRITE ===== */
-.icon-real {
-  width: 35px; /* Tamanho da "janela" do recorte */
-  height: 35px;
-  /* ATENÇÃO: O nome da imagem deve ser exatamente o arquivo que você tem na pasta */
-  background-image: url('Captura de tela 2026-05-15 091926.jpg'); 
-  background-size: 800px; /* Ajuste isso se a sua imagem original for muito grande ou pequena */
-  background-repeat: no-repeat;
+:root {
+  --bg-dark: #050505;
+  --panel-bg: #0a0a0c;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
   
-  /* Deixa a luz "apagada" por padrão */
-  filter: brightness(0.15) grayscale(1); 
-  transition: all 0.2s ease-in-out;
+  /* Cores reais de LED automotivo */
+  --led-red: #ff2a2a;
+  --led-amber: #ffaa00;
+  --led-green: #00ff66;
+  --led-blue: #00aaff;
+  
+  --led-off: rgba(255, 255, 255, 0.05);
 }
 
-/* Quando o botão ganha a classe .active, a luz "acende" */
-.light-btn.active .icon-real {
-  filter: brightness(1.2) grayscale(0) drop-shadow(0 0 8px rgba(255,255,255,0.4));
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+body {
+  background: var(--bg-dark);
+  background-image: radial-gradient(circle at 50% 0%, #1a1a24 0%, #000 70%);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Mapeamento de Coordenadas (X, Y)
-  Você altera esses valores de px para mover a imagem e centralizar o ícone certo.
-  X negativo move a imagem para a esquerda. Y negativo move para cima.
-*/
-.ico-1  { background-position: -20px -20px; }   /* Ex: Farol neblina (1) */
-.ico-2  { background-position: -70px -20px; }   /* Ex: Direção (2) */
-.ico-4  { background-position: -170px -20px; }  /* Ex: Esguicho (4) */
-.ico-21 { background-position: -200px -80px; }  /* Ex: TPMS (21) */
-.ico-57 { background-position: -120px -250px; } /* Ex: Óleo (57) */
-.ico-62 { background-position: -700px -250px; } /* Ex: Motor (62) */
-
-/* Cartão do quiz e botões */
-.quiz-card{
-  margin-top:20px; width:100%; max-width:800px; background: #0a0a0a;
-  border:1px solid #222; border-radius:10px; padding:20px; text-align:center;
+/* ===== PAINEL PRINCIPAL (HUD) ===== */
+.dashboard {
+  width: 95%;
+  max-width: 1000px;
+  background: linear-gradient(145deg, #111, #080808);
+  border-radius: 40px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 30px 60px rgba(0,0,0,0.9),
+    inset 0 2px 10px rgba(255,255,255,0.05),
+    inset 0 -10px 20px rgba(0,0,0,0.8);
+  padding: 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.q-name{ font-family:'Orbitron'; font-size:24px; color:#fff; margin-bottom:10px; }
-.q-desc{ color:#aaa; font-size:16px; }
-.btn{ 
-  margin-top:15px; padding:10px 20px; font-family:'Orbitron'; 
-  background:#c8860a; color:#000; border:none; cursor:pointer; font-weight:bold;
+
+/* Efeito de vidro por cima do painel */
+.dashboard::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 40px; pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%);
+}
+
+/* ===== DISPLAY CENTRAL (COMPUTADOR DE BORDO) ===== */
+.center-display {
+  width: 100%;
+  max-width: 600px;
+  height: 180px;
+  background: #020202;
+  border: 2px solid #1a1a1a;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 0 30px rgba(0,0,0,1);
+  overflow: hidden;
+}
+
+.scanline {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0), rgba(255,255,255,0.05));
+  background-size: 100% 4px; pointer-events: none; z-index: 10;
+}
+
+.game-status {
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  position: absolute;
+  top: 15px;
+  color: #555;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.score-glow { color: var(--led-blue); text-shadow: 0 0 10px var(--led-blue); }
+.lives-glow { color: var(--led-red); text-shadow: 0 0 10px var(--led-red); }
+
+.prompt-text {
+  font-size: 24px;
+  text-align: center;
+  z-index: 5;
+  transition: 0.3s;
+}
+
+.prompt-target {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(255,255,255,0.5);
+  margin-top: 5px;
+  text-transform: uppercase;
+  z-index: 5;
+}
+
+/* ===== GRID DE LUZES ===== */
+.lights-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 15px;
+  width: 100%;
+  position: relative;
+  z-index: 5;
+}
+
+.light-slot {
+  aspect-ratio: 1;
+  background: #080808;
+  border-radius: 12px;
+  border: 1px solid #1a1a1a;
+  box-shadow: inset 0 5px 10px rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--led-off);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.light-slot::before {
+  content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.light-slot:hover { transform: scale(1.05); background: #111; }
+.light-slot:active { transform: scale(0.95); }
+
+/* ESTADOS DAS LUZES (ACESA) */
+.light-slot.on-red {
+  color: var(--led-red);
+  text-shadow: 0 0 15px var(--led-red), 0 0 30px var(--led-red);
+  background: #1a0000; border-color: #4d0000;
+}
+.light-slot.on-amber {
+  color: var(--led-amber);
+  text-shadow: 0 0 15px var(--led-amber), 0 0 30px var(--led-amber);
+  background: #1a1100; border-color: #4d3300;
+}
+.light-slot.on-green {
+  color: var(--led-green);
+  text-shadow: 0 0 15px var(--led-green), 0 0 30px var(--led-green);
+  background: #001a0a; border-color: #004d1f;
+}
+.light-slot.on-blue {
+  color: var(--led-blue);
+  text-shadow: 0 0 15px var(--led-blue), 0 0 30px var(--led-blue);
+  background: #00111a; border-color: #00334d;
+}
+
+/* Animação de piscar para erro */
+@keyframes flashError { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.error-flash { animation: flashError 0.2s infinite; }
+
+/* ===== BOTÃO DE START ===== */
+.btn-engine {
+  margin-top: 40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #222, #000);
+  border: 4px solid #333;
+  color: #ff3333;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,1);
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-engine::after {
+  content: 'ENGINE';
+  font-size: 10px; color: #777; margin-top: 5px; letter-spacing: 2px;
+}
+
+.btn-engine:hover {
+  border-color: #ff3333;
+  color: #ffaaaa;
+  box-shadow: 0 0 30px rgba(255,51,51,0.4), inset 0 0 20px rgba(255,51,51,0.2);
+}
+
+.btn-engine:active { transform: scale(0.95); }
+
+.btn-engine.running {
+  border-color: var(--led-red);
+  color: #fff;
+  text-shadow: 0 0 10px #fff;
+  box-shadow: 0 0 50px rgba(255,51,51,0.6), inset 0 0 30px rgba(255,51,51,0.5);
+  animation: pulseEngine 2s infinite;
+}
+
+@keyframes pulseEngine {
+  0%, 100% { box-shadow: 0 0 50px rgba(255,51,51,0.6), inset 0 0 30px rgba(255,51,51,0.5); }
+  50% { box-shadow: 0 0 30px rgba(255,51,51,0.3), inset 0 0 15px rgba(255,51,51,0.3); }
+}
+
+/* Telas de Fim de Jogo */
+.overlay-msg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8); z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+  opacity: 0; pointer-events: none; transition: 0.5s;
+}
+.overlay-msg.show { opacity: 1; pointer-events: all; }
+.overlay-title { font-family: 'Orbitron'; font-size: 50px; margin-bottom: 20px; }
+.overlay-btn { 
+  padding: 15px 30px; font-family: 'Orbitron'; font-size: 18px; 
+  background: #222; color: #fff; border: 1px solid #555; cursor: pointer; border-radius: 8px;
+}
+.overlay-btn:hover { background: #333; }
+
+@media (max-width: 768px) {
+  .lights-grid { grid-template-columns: repeat(4, 1fr); }
+  .dashboard { padding: 20px; }
+  .light-slot { font-size: 22px; }
+  .prompt-target { font-size: 22px; }
 }
 </style>
 </head>
 <body>
 
-<div class="header">SISTEMA COM LUZES REAIS (SPRITE MAPPING)</div>
+<div class="dashboard">
+  
+  <div class="center-display">
+    <div class="scanline"></div>
+    <div class="game-status">
+      <div>SCORE: <span id="scoreTxt" class="score-glow">0</span></div>
+      <div>HP: <span id="livesTxt" class="lives-glow">❤❤❤</span></div>
+    </div>
+    
+    <div class="prompt-text" id="promptText" style="color: #666;">SISTEMA OFFLINE</div>
+    <div class="prompt-target" id="promptTarget">PRESSIONE START</div>
+  </div>
 
-<div class="lights-panel" id="panel">
-  <div class="light-btn" onclick="activate(this, 'Farol de Neblina', 'Luz de neblina dianteira acesa.')"><div class="icon-real ico-1"></div></div>
-  <div class="light-btn" onclick="activate(this, 'Direção Elétrica', 'Falha no sistema de direção assistida.')"><div class="icon-real ico-2"></div></div>
-  <div class="light-btn" onclick="activate(this, 'Água do Para-brisa', 'Nível baixo no reservatório de esguicho.')"><div class="icon-real ico-4"></div></div>
-  <div class="light-btn" onclick="activate(this, 'TPMS (Pneu)', 'Pressão baixa detectada em algum pneu.')"><div class="icon-real ico-21"></div></div>
-  <div class="light-btn" onclick="activate(this, 'Pressão de Óleo', 'Pare o carro! Falta de lubrificação no motor.')"><div class="icon-real ico-57"></div></div>
-  <div class="light-btn" onclick="activate(this, 'Check Engine', 'Anomalia no motor ou sistema de injeção.')"><div class="icon-real ico-62"></div></div>
+  <div class="lights-grid" id="grid">
+    </div>
+
 </div>
 
-<div class="quiz-card">
-  <div class="q-name" id="nomeLuz">CLIQUE EM UMA LUZ ACIMA</div>
-  <div class="q-desc" id="descLuz">O diagnóstico aparecerá aqui.</div>
+<button class="btn-engine" id="btnStart" onclick="startSystem()">START</button>
+
+<div class="overlay-msg" id="gameOverScreen">
+  <div class="overlay-title" style="color: var(--led-red); text-shadow: 0 0 20px var(--led-red);">FALHA NO MOTOR</div>
+  <button class="overlay-btn" onclick="location.reload()">REINICIAR DIAGNÓSTICO</button>
+</div>
+
+<div class="overlay-msg" id="winScreen">
+  <div class="overlay-title" style="color: var(--led-green); text-shadow: 0 0 20px var(--led-green);">SISTEMA 100% OK</div>
+  <button class="overlay-btn" onclick="location.reload()">NOVO TESTE</button>
 </div>
 
 <script>
-function activate(btnElement, nome, desc) {
-  // Apaga todas as luzes
-  document.querySelectorAll('.light-btn').forEach(b => b.classList.remove('active'));
+// Banco de Dados das Luzes (Ícones Vetoriais Perfeitos)
+const DB = [
+  { id: 'engine', icon: 'fa-triangle-exclamation', color: 'amber', name: 'Check Engine' },
+  { id: 'oil', icon: 'fa-oil-can', color: 'red', name: 'Pressão do Óleo' },
+  { id: 'battery', icon: 'fa-car-battery', color: 'red', name: 'Bateria / Alternador' },
+  { id: 'temp', icon: 'fa-temperature-half', color: 'red', name: 'Temperatura' },
+  { id: 'brake', icon: 'fa-circle-exclamation', color: 'red', name: 'Freio de Mão' },
+  { id: 'abs', icon: 'fa-truck-monster', color: 'amber', name: 'ABS' }, // Aproximação visual
+  { id: 'airbag', icon: 'fa-user-shield', color: 'red', name: 'Airbag' },
+  { id: 'fuel', icon: 'fa-gas-pump', color: 'amber', name: 'Combustível Baixo' },
+  { id: 'highbeam', icon: 'fa-lightbulb', color: 'blue', name: 'Farol Alto' },
+  { id: 'fog', icon: 'fa-smog', color: 'green', name: 'Farol de Neblina' },
+  { id: 'doors', icon: 'fa-door-open', color: 'red', name: 'Porta Aberta' },
+  { id: 'seatbelt', icon: 'fa-user-slash', color: 'red', name: 'Cinto de Segurança' },
+  { id: 'washer', icon: 'fa-fill-drip', color: 'amber', name: 'Água do Para-brisa' },
+  { id: 'tpms', icon: 'fa-compress', color: 'amber', name: 'Pressão do Pneu' },
+  { id: 'steering', icon: 'fa-dharmachakra', color: 'amber', name: 'Direção Elétrica' },
+  { id: 'traction', icon: 'fa-car-burst', color: 'amber', name: 'Controle de Tração' }
+];
+
+// Áudio Sintetizado (Zero dependências externas)
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+function playTone(freq, type, duration) {
+  if(ctx.state === 'suspended') ctx.resume();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type; osc.frequency.value = freq;
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start();
+  gain.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.stop(ctx.currentTime + duration);
+}
+
+// Lógica do Jogo
+let isRunning = false;
+let score = 0;
+let lives = 3;
+let currentTarget = null;
+let remaining = [...DB];
+
+const grid = document.getElementById('grid');
+
+// Renderiza os botões
+DB.forEach((light, index) => {
+  const div = document.createElement('div');
+  div.className = 'light-slot';
+  div.id = `slot-${light.id}`;
+  // Gambiarra pro ícone do ABS ficar escrito "ABS"
+  if(light.id === 'abs') div.innerHTML = '<span style="font-family:sans-serif;font-size:16px;font-weight:bold;">ABS</span>';
+  else div.innerHTML = `<i class="fa-solid ${light.icon}"></i>`;
   
-  // Acende a luz clicada (o CSS cuida de remover os filtros cinza/escuros)
-  btnElement.classList.add('active');
+  div.onclick = () => checkAnswer(light);
+  grid.appendChild(div);
+});
+
+async function startSystem() {
+  if (isRunning) return;
+  isRunning = true;
+  document.getElementById('btnStart').classList.add('running');
   
-  // Atualiza o painel de texto
-  document.getElementById('nomeLuz').innerText = nome;
-  document.getElementById('descLuz').innerText = desc;
+  // Efeito de virar a chave (Todas as luzes acendem)
+  playTone(800, 'square', 0.1);
+  setTimeout(() => playTone(1200, 'square', 0.2), 150);
+
+  document.getElementById('promptText').innerText = "SYSTEM BOOT...";
+  document.getElementById('promptTarget').innerText = "DIAGNOSTIC TEST";
+  document.getElementById('promptTarget').style.color = "#fff";
+
+  DB.forEach(l => document.getElementById(`slot-${l.id}`).classList.add(`on-${l.color}`));
+
+  // Desliga após 2 segundos e começa o jogo
+  setTimeout(() => {
+    DB.forEach(l => document.getElementById(`slot-${l.id}`).classList.remove(`on-${l.color}`));
+    nextQuestion();
+  }, 2000);
+}
+
+function nextQuestion() {
+  if (lives <= 0) return gameOver();
+  if (remaining.length === 0) return winGame();
+
+  // Sorteia uma luz que ainda não foi
+  const randIdx = Math.floor(Math.random() * remaining.length);
+  currentTarget = remaining[randIdx];
+  
+  document.getElementById('promptText').innerText = "ENCONTRE A LUZ:";
+  document.getElementById('promptText').style.color = "#00aaff";
+  document.getElementById('promptTarget').innerText = currentTarget.name;
+}
+
+function checkAnswer(clickedLight) {
+  if (!isRunning || !currentTarget) return;
+
+  const slot = document.getElementById(`slot-${clickedLight.id}`);
+
+  if (clickedLight.id === currentTarget.id) {
+    // ACERTOU
+    playTone(600, 'sine', 0.1);
+    setTimeout(() => playTone(900, 'sine', 0.2), 100);
+    
+    slot.classList.add(`on-${clickedLight.color}`);
+    score += 100;
+    document.getElementById('scoreTxt').innerText = score;
+    
+    // Remove da lista
+    remaining = remaining.filter(l => l.id !== currentTarget.id);
+    currentTarget = null;
+    
+    document.getElementById('promptTarget').innerText = "CORRETO!";
+    document.getElementById('promptTarget').style.color = "var(--led-green)";
+    
+    setTimeout(nextQuestion, 1000);
+  } else {
+    // ERROU
+    playTone(150, 'sawtooth', 0.4);
+    slot.classList.add('on-red', 'error-flash');
+    
+    lives--;
+    let heartStr = "";
+    for(let i=0; i<lives; i++) heartStr += "❤";
+    document.getElementById('livesTxt').innerText = heartStr || "0";
+
+    setTimeout(() => {
+      slot.classList.remove('on-red', 'error-flash');
+      if (lives <= 0) gameOver();
+    }, 800);
+  }
+}
+
+function gameOver() {
+  currentTarget = null;
+  playTone(100, 'sawtooth', 1);
+  document.getElementById('gameOverScreen').classList.add('show');
+}
+
+function winGame() {
+  currentTarget = null;
+  playTone(400, 'sine', 0.2);
+  setTimeout(() => playTone(600, 'sine', 0.2), 200);
+  setTimeout(() => playTone(800, 'sine', 0.4), 400);
+  document.getElementById('winScreen').classList.add('show');
 }
 </script>
 
