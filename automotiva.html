@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simulador de Diagnóstico Automotivo Premium</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
 
@@ -75,11 +76,7 @@ body{
 }
 
 .speedo svg{width:100%;height:100%;}
-
-line.needle {
-  stroke-linecap: round;
-  filter: drop-shadow(0px 3px 2px rgba(0,0,0,0.6));
-}
+line.needle { stroke-linecap: round; filter: drop-shadow(0px 3px 2px rgba(0,0,0,0.6)); }
 
 /* ===== LIGHTS PANEL ===== */
 .lights-panel{
@@ -100,7 +97,7 @@ line.needle {
   justify-content:center;
 }
 
-/* ===== BOTÕES DE LUZ ===== */
+/* ===== BOTÕES DE LUZ (AGORA COM FONTES VETORIAIS) ===== */
 .light-btn{
   width:clamp(38px,6.5vw,52px);
   height:clamp(38px,6.5vw,52px);
@@ -115,137 +112,77 @@ line.needle {
   position:relative;
   flex-shrink:0;
   overflow: hidden;
+  color: rgba(255,255,255,0.05); /* Desligado */
+  font-size: clamp(18px, 3.5vw, 22px);
 }
 
-.light-btn img{
-  width:65%;
-  height:65%;
-  object-fit: contain;
-  opacity:0.1;
-  filter: grayscale(1) brightness(0.5);
-  transition: opacity 0.3s, filter 0.3s;
-  color: transparent; /* Esconde o alt se a imagem quebrar */
+.light-btn .icon-wrap {
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s;
 }
 
 .light-btn::after {
-  content: '';
-  position: absolute;
+  content: ''; position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.7), inset 0 -1px 2px rgba(255,255,255,0.02);
-  border-radius: 8px;
+  border-radius: 8px; z-index: 1;
 }
 
 /* ===== BLOOM EMISSIVO (LUZ ACESA) ===== */
-.light-btn.active img{
-  opacity:1;
-  filter: saturate(1.2);
-}
-
 .light-btn.active.c-red{
-  border-color:#ff4444;
-  background:#1a0000;
-  filter: blur(0.5px);
-  box-shadow:
-    0 0 5px rgba(255,68,68,0.5),
-    0 0 15px rgba(255,68,68,0.3),
-    0 0 30px rgba(255,68,68,0.15),
-    inset 0 0 10px rgba(255,68,68,0.2);
+  border-color:#ff4444; background:#1a0000; color:#ff4444;
+  box-shadow: 0 0 5px rgba(255,68,68,0.5), inset 0 0 10px rgba(255,68,68,0.2);
 }
+.light-btn.active.c-red .icon-wrap { filter: drop-shadow(0 0 8px #ff4444); }
 
 .light-btn.active.c-amber{
-  border-color:#ffcc00;
-  background:#2a2000;
-  filter: blur(0.5px);
-  box-shadow:
-    0 0 5px rgba(255,204,0,0.5),
-    0 0 15px rgba(255,204,0,0.3),
-    0 0 30px rgba(255,204,0,0.15),
-    inset 0 0 10px rgba(255,204,0,0.2);
+  border-color:#ffcc00; background:#2a2000; color:#ffcc00;
+  box-shadow: 0 0 5px rgba(255,204,0,0.5), inset 0 0 10px rgba(255,204,0,0.2);
 }
+.light-btn.active.c-amber .icon-wrap { filter: drop-shadow(0 0 8px #ffcc00); }
 
 .light-btn.active.c-green{
-  border-color:#00ff88;
-  background:#001a0d;
-  filter: blur(0.5px);
-  box-shadow:
-    0 0 5px rgba(0,255,136,0.5),
-    0 0 15px rgba(0,255,136,0.3),
-    0 0 30px rgba(0,255,136,0.15),
-    inset 0 0 10px rgba(0,255,136,0.2);
+  border-color:#00ff88; background:#001a0d; color:#00ff88;
+  box-shadow: 0 0 5px rgba(0,255,136,0.5), inset 0 0 10px rgba(0,255,136,0.2);
 }
+.light-btn.active.c-green .icon-wrap { filter: drop-shadow(0 0 8px #00ff88); }
 
 .light-btn.active.c-blue{
-  border-color:#00ccff;
-  background:#00151a;
-  filter: blur(0.5px);
-  box-shadow:
-    0 0 5px rgba(0,204,255,0.5),
-    0 0 15px rgba(0,204,255,0.3),
-    0 0 30px rgba(0,204,255,0.15),
-    inset 0 0 10px rgba(0,204,255,0.2);
+  border-color:#00ccff; background:#00151a; color:#00ccff;
+  box-shadow: 0 0 5px rgba(0,204,255,0.5), inset 0 0 10px rgba(0,204,255,0.2);
 }
+.light-btn.active.c-blue .icon-wrap { filter: drop-shadow(0 0 8px #00ccff); }
 
-.light-btn.done img{ opacity:0.04; filter:grayscale(1) brightness(0.3); }
-.light-btn.done{ border-color:#111; background: #080808; cursor:default; box-shadow: none; filter: none;}
-.light-btn.done::after { box-shadow: inset 0 1px 2px rgba(0,0,0,0.8); }
+.light-btn.done { color: rgba(255,255,255,0.03); border-color:#111; background: #080808; cursor:default; box-shadow: none; }
+.light-btn.done .icon-wrap { filter: none; }
 
 @keyframes lightblink{0%,100%{opacity:1} 60%{opacity:0.6}}
-.light-btn.active img { animation:lightblink 1.6s ease-in-out infinite; }
+.light-btn.active .icon-wrap { animation:lightblink 1.6s ease-in-out infinite; }
 
 /* ===== PROGRESS BAR ===== */
 .prog-wrap{
-  width:100%; max-width:960px;
-  height:4px; background:#0a0a0a;
-  border-radius:2px; margin-bottom:15px;
-  overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  width:100%; max-width:960px; height:4px; background:#0a0a0a;
+  border-radius:2px; margin-bottom:15px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
 }
-.prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,#8a5c05,#c8860a);
-  transition:width .5s ease;
-  box-shadow:0 0 10px #c8860a;
-}
+.prog-fill{ height:100%; background:linear-gradient(90deg,#8a5c05,#c8860a); transition:width .5s ease; box-shadow:0 0 10px #c8860a; }
 
 /* ===== QUIZ CARD ===== */
 .quiz-card{
   width:100%; max-width:960px;
   background: linear-gradient(160deg, #0e0e12 0%, #08080a 100%);
-  border:1px solid #1a1a22;
-  border-radius:20px;
-  padding:30px;
-  min-height:210px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center;
-  box-shadow:0 10px 40px rgba(0,0,0,0.8);
-  position:relative;
+  border:1px solid #1a1a22; border-radius:20px; padding:30px;
+  min-height:210px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.8); position:relative;
 }
 
-.q-phase{
-  font-family:'Orbitron',monospace; font-size:11px; letter-spacing:4px;
-  margin-bottom:15px; text-transform:uppercase; font-weight:700; color:#555;
-}
-
-.q-big-icon{ margin-bottom:15px; filter: drop-shadow(0 0 15px currentColor); font-size:0; }
-.q-big-icon img{ width:70px; height:70px; object-fit: contain; }
-
-.q-name{
-  font-family:'Orbitron',monospace; font-size:clamp(18px,4.5vw,30px);
-  font-weight:900; letter-spacing:1px; margin-bottom:10px; color:#fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
+.q-phase{ font-family:'Orbitron',monospace; font-size:11px; letter-spacing:4px; margin-bottom:15px; text-transform:uppercase; font-weight:700; color:#555; }
+.q-big-icon{ margin-bottom:15px; font-size:65px; display:flex; align-items:center; justify-content:center; }
+.q-name{ font-family:'Orbitron',monospace; font-size:clamp(18px,4.5vw,30px); font-weight:900; letter-spacing:1px; margin-bottom:10px; color:#fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 .q-desc{ font-size:clamp(15px,2.8vw,19px); color:#aab; max-width:620px; line-height:1.6; }
 
-.q-detail-box{
-  background: rgba(0, 10, 20, 0.5);
-  border:1px solid #003355; border-radius:12px;
-  padding:20px 25px; margin-top:20px; max-width:680px; text-align:left;
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-}
-.q-detail-title{
-  font-family:'Orbitron',monospace; font-size:10px; letter-spacing:3px;
-  color:#00ccff; margin-bottom:10px; font-weight:700;
-}
+.q-detail-box{ background: rgba(0, 10, 20, 0.5); border:1px solid #003355; border-radius:12px; padding:20px 25px; margin-top:20px; max-width:680px; text-align:left; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+.q-detail-title{ font-family:'Orbitron',monospace; font-size:10px; letter-spacing:3px; color:#00ccff; margin-bottom:10px; font-weight:700; }
 .q-detail-text{ font-size:15px; color:#b0c4de; line-height:1.8; }
 
 .idle-txt{ color:#444; font-size:19px; letter-spacing:1px; animation:lightblink 2s ease-in-out infinite; }
@@ -253,18 +190,8 @@ line.needle {
 
 /* ===== BOTOES ===== */
 .btn-row{ display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
-.btn{
-  font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px;
-  padding:15px 30px; border:none; border-radius:8px;
-  cursor:pointer; text-transform:uppercase; font-weight:700;
-  transition:all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position:relative; overflow:hidden;
-}
-.btn::before {
-  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-  transition: 0.5s;
-}
+.btn{ font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; text-transform:uppercase; font-weight:700; transition:all 0.2s; position:relative; overflow:hidden; }
+.btn::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transition: 0.5s; }
 .btn:hover::before { left: 100%; }
 .btn:hover{ transform:translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 .btn:active{ transform:translateY(1px); }
@@ -273,7 +200,11 @@ line.needle {
 .btn-next{ background: linear-gradient(145deg, #001f2a, #001520); color:#00ccff; border:1px solid #00335a; }
 .btn-restart{ background: linear-gradient(145deg, #2a0000, #1a0000); color:#ff4444; border:1px solid #660000; }
 
-.tc-red{color:#ff4444} .tc-amber{color:#ffcc00} .tc-green{color:#00ff88} .tc-blue{color:#00ccff}
+.tc-red{color:#ff4444; filter:drop-shadow(0 0 15px rgba(255,68,68,0.8));}
+.tc-amber{color:#ffcc00; filter:drop-shadow(0 0 15px rgba(255,204,0,0.8));}
+.tc-green{color:#00ff88; filter:drop-shadow(0 0 15px rgba(0,255,136,0.8));}
+.tc-blue{color:#00ccff; filter:drop-shadow(0 0 15px rgba(0,204,255,0.8));}
+
 @keyframes slidein{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .slidein{ animation:slidein 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 </style>
@@ -285,7 +216,7 @@ line.needle {
 <div class="dash-shell">
   <div class="dash-interior">
     <div class="speedo">
-      <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 160 160">
         <defs>
           <radialGradient id="gradGauge" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
             <stop offset="70%" style="stop-color:#050505;stop-opacity:1" />
@@ -295,16 +226,11 @@ line.needle {
         <circle cx="80" cy="80" r="78" fill="url(#gradGauge)" stroke="#1a1a1a" stroke-width="1.5"/>
         <circle cx="80" cy="80" r="70" fill="none" stroke="#222" stroke-width="0.5"/>
         <g stroke="#444" stroke-width="1.5">
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-104 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-52 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(0 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(52 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(104 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-104 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-52 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(0 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(52 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(104 80 80)"/>
           <line x1="80" y1="12" x2="80" y2="22" transform="rotate(130 80 80)"/>
         </g>
         <text x="80" y="55" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">60</text>
@@ -314,8 +240,7 @@ line.needle {
         <text x="32" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">20</text>
         <path d="M 115 35 A 70 70 0 0 1 138 115" fill="none" stroke="#400" stroke-width="4" stroke-linecap="round"/>
         <line class="needle" x1="80" y1="80" x2="80" y2="22" stroke="#c8860a" stroke-width="2.5" transform="rotate(-60 80 80)"/>
-        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/>
-        <circle cx="80" cy="80" r="3" fill="#c8860a"/>
+        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/><circle cx="80" cy="80" r="3" fill="#c8860a"/>
         <text x="80" y="110" fill="#444" font-size="9" text-anchor="middle" font-family="Orbitron,monospace">RPM×1000</text>
       </svg>
     </div>
@@ -323,16 +248,13 @@ line.needle {
     <div class="lights-panel" id="lightsPanel"></div>
 
     <div class="speedo">
-      <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 160 160">
         <circle cx="80" cy="80" r="78" fill="url(#gradGauge)" stroke="#1a1a1a" stroke-width="1.5"/>
         <circle cx="80" cy="80" r="70" fill="none" stroke="#222" stroke-width="0.5"/>
         <g stroke="#444" stroke-width="1.5">
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(130 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/>
+          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(130 80 80)"/>
         </g>
         <text x="80" y="50" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">100</text>
         <text x="114" y="60" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">120</text>
@@ -340,8 +262,7 @@ line.needle {
         <text x="46" y="60" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">80</text>
         <text x="30" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">60</text>
         <line class="needle" x1="80" y1="80" x2="80" y2="22" stroke="#c8860a" stroke-width="2.5" transform="rotate(-100 80 80)"/>
-        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/>
-        <circle cx="80" cy="80" r="3" fill="#c8860a"/>
+        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/><circle cx="80" cy="80" r="3" fill="#c8860a"/>
         <text x="80" y="110" fill="#444" font-size="9" text-anchor="middle" font-family="Orbitron,monospace">KM/H</text>
         <rect x="50" y="118" width="60" height="16" rx="3" fill="#050505" stroke="#1a1a1a"/>
         <text x="80" y="129" fill="#222" font-size="7" text-anchor="middle" font-family="monospace">000024 KM</text>
@@ -364,78 +285,71 @@ line.needle {
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type, freq, duration, volume = 0.1) {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+  osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
   gain.gain.setValueAtTime(volume, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
   osc.stop(audioCtx.currentTime + duration);
 }
 
-// Chaves ajustadas para bater exatamente com os IDs do array LIGHTS
-const IMGS = {
-  motor: "https://cdn-icons-png.flaticon.com/512/483/483108.png",
-  oleo: "https://cdn-icons-png.flaticon.com/512/9111/9111005.png",
-  temp: "https://cdn-icons-png.flaticon.com/512/2921/2921935.png",
-  bateria: "https://cdn-icons-png.flaticon.com/512/6616/6616654.png",
-  freio: "https://cdn-icons-png.flaticon.com/512/9525/9525624.png",
-  abs: "https://cdn-icons-png.flaticon.com/512/9371/9371089.png",
-  airbag: "https://cdn-icons-png.flaticon.com/512/2881/2881023.png",
-  combustivel: "https://cdn-icons-png.flaticon.com/512/4303/4303914.png",
-  direcao: "https://cdn-icons-png.flaticon.com/512/10551/10551722.png",
-  tpms: "https://cdn-icons-png.flaticon.com/512/9370/9370617.png",
-  esp: "https://cdn-icons-png.flaticon.com/512/9371/9371097.png",
-  catalisador: "https://cdn-icons-png.flaticon.com/512/3221/3221681.png",
-  w4d: "https://cdn-icons-png.flaticon.com/512/10168/10168058.png",
-  seta_esq: "https://cdn-icons-png.flaticon.com/512/109/109617.png",
-  luz_alta: "https://cdn-icons-png.flaticon.com/512/1110/1110300.png",
-  dpf: "https://cdn-icons-png.flaticon.com/512/3221/3221681.png",
-  agua_comb: "https://cdn-icons-png.flaticon.com/512/10168/10168087.png",
-  servico: "https://cdn-icons-png.flaticon.com/512/2910/2910795.png",
-  cinto: "https://cdn-icons-png.flaticon.com/512/8421/8421048.png",
-  porta: "https://cdn-icons-png.flaticon.com/512/10168/10168114.png",
-  cambio: "https://cdn-icons-png.flaticon.com/512/9371/9371120.png",
-  injecao: "https://cdn-icons-png.flaticon.com/512/10168/10168134.png",
-  suspensao: "https://cdn-icons-png.flaticon.com/512/3221/3221681.png",
-  check: "https://cdn-icons-png.flaticon.com/512/564/564619.png"
+// Adeus links quebrados. Mapeamento usando FontAwesome e Fontes padrão (100% à prova de falhas)
+const ICONS = {
+  motor: '<i class="fa-solid fa-triangle-exclamation" style="position:relative"><i class="fa-solid fa-gear" style="position:absolute;font-size:0.5em;top:10px;left:-6px;"></i></i>',
+  oleo: '<i class="fa-solid fa-oil-can"></i>',
+  temp: '<i class="fa-solid fa-temperature-half"></i>',
+  bateria: '<i class="fa-solid fa-car-battery"></i>',
+  freio: '<b style="font-family:sans-serif;font-size:0.85em">( ! )</b>',
+  abs: '<b style="font-family:sans-serif;font-size:0.65em">(ABS)</b>',
+  airbag: '<i class="fa-solid fa-user-shield"></i>',
+  combustivel: '<i class="fa-solid fa-gas-pump"></i>',
+  direcao: '<i class="fa-solid fa-dharmachakra"></i>',
+  tpms: '<b style="font-family:sans-serif;font-size:0.75em">(!_)</b>',
+  esp: '<i class="fa-solid fa-car-burst"></i>',
+  catalisador: '<i class="fa-solid fa-fire-flame-curved"></i>',
+  w4d: '<b style="font-family:sans-serif;font-size:0.75em">4x4</b>',
+  seta_esq: '<i class="fa-solid fa-arrows-left-right"></i>',
+  luz_alta: '<i class="fa-solid fa-lightbulb"></i>',
+  dpf: '<i class="fa-solid fa-smog"></i>',
+  agua_comb: '<i class="fa-solid fa-fill-drip"></i>',
+  servico: '<i class="fa-solid fa-wrench"></i>',
+  cinto: '<i class="fa-solid fa-user-slash"></i>',
+  porta: '<i class="fa-solid fa-door-open"></i>',
+  cambio: '<b style="font-family:sans-serif;font-size:0.85em">⚙!</b>',
+  injecao: '<i class="fa-solid fa-bolt"></i>',
+  suspensao: '<i class="fa-solid fa-car-side"></i>',
+  check: '<i class="fa-solid fa-circle-exclamation"></i>'
 };
 
 const LIGHTS = [
-  {id:'motor',    icon:'motor',    color:'c-amber', nome:'CHECK ENGINE',       desc:'Falha detectada no motor ou sistema de emissões pelo ECM.',     det:'Indica que o módulo ECM detectou código de falha. Pode ser tampão frouxo, sensor O2, bobina de ignição ou catalisador. Nunca ignore — leve para leitura OBD-II.'},
-  {id:'oleo',     icon:'oleo',     color:'c-red',   nome:'PRESSÃO DE ÓLEO',    desc:'Pressão de lubrificação insuficiente — risco grave ao motor.',   det:'EMERGÊNCIA total. Motor sem lubrificação adequada pode fundir pistões e virabrequim em minutos. Pare imediatamente, desligue e verifique o nível. Se normal, bomba de óleo com defeito.'},
-  {id:'temp',     icon:'temp',     color:'c-red',   nome:'SUPERAQUECIMENTO',   desc:'Temperatura do motor acima do limite seguro.',                   det:'Motor superaquecendo. Causas: falta de fluido, termostato travado, ventoinha ou radiador. Pare, desligue o AC, ligue o aquecedor no máximo. NUNCA abra o radiador quente.'},
-  {id:'bateria', icon:'bateria',  color:'c-red',   nome:'FALHA NO ALTERNADOR', desc:'Alternador não carrega a bateria — carro pode parar em minutos.', det:'A bateria está se esgotando em movimento. Desligue AC, rádio, faróis se possible. Pode ser correia, escovas ou regulador. Vá direto a uma oficina.'},
-  {id:'freio',    icon:'freio',    color:'c-red',   nome:'SISTEMA DE FREIOS',  desc:'Freio de mão acionado ou fluido de freio com nível baixo.',      det:'Fluido baixo = PERIGO: vazamento ou pastilhas desgastadas. Freios podem falhar. Verifique o reservatório. Se baixo, não dirija sem inspeção.'},
-  {id:'abs',      icon:'abs',      color:'c-amber', nome:'FALHA NO ABS',       desc:'Antitravamento desativado — maior risco em frenagem brusca.',    det:'O ABS impede travamento em emergências, mantendo controle direcional. Sem ele, em piso escorregadio a roda trava e você perde a direção. Verifique sensores das rodas.'},
-  {id:'airbag',  icon:'airbag',   color:'c-red',   nome:'FALHA NO AIRBAG',     desc:'Sistema SRS com defeito — airbag pode não inflar em colisão.',   det:'Em impacto, o airbag pode não abrir — ou abrir sem razão. Ambos perigosos. Pode ser sensor de impacto, conector ou inflator. Exige diagnóstico especializado.'},
-  {id:'combustivel',icon:'combustivel',color:'c-amber',nome:'COMBUSTÍVEL BAIXO',desc:'Reserva ativada — aproximadamente 5 a 10 litros restantes.',   det:'Dirigir com tanque muito vazio prejudica a bomba (que usa gasolina como lubrificante) e aspira sedimentos do fundo, entupindo o filtro de combustível.'},
-  {id:'direcao', icon:'direcao',  color:'c-amber', nome:'DIREÇÃO ELÉTRICA',    desc:'Falha na direção assistida — volante ficará pesado.',            det:'EPS com defeito. O carro dirige, mas o volante exige muita força. Perigoso em alta velocidade. Pode ser sensor de torque, motor da coluna ou módulo eletrônico.'},
-  {id:'tpms',    icon:'tpms',     color:'c-amber', nome:'PNEU MURCHO (TPMS)',  desc:'Um ou mais pneus com pressão abaixo do ideal.',                  det:'Pneus sub-inflados aumentam consumo, pioram frenagem, causam desgaste irregular e risco de estouro. Pressão correta está na coluna da porta do motorista.'},
-  {id:'esp',      icon:'esp',      color:'c-amber', nome:'CONTROLE DE ESTAB.', desc:'ESP ativado ou desligado — sistema de estabilidade.',            det:'Piscando: sistema trabalhando (normal). Fixo: ESP desligado ou com falha. Ele freia rodas individualmente para manter trajetória. Sem ele, risco de capotamento.'},
-  {id:'catalisador',icon:'catalisador',color:'c-amber',nome:'CATALISADOR QUENTE',desc:'Temperatura do catalisador perigosamente alta.',              det:'Superaquecimento por mistura rica ou velas/bobinas falhando, jogando combustível não queimado no escapamento. O catalisador pode fundir internamente — caro substituir.'},
-  {id:'w4d',      icon:'w4d',      color:'c-amber', nome:'TRAÇÃO 4×4',         desc:'Modo 4WD ativo ou falha no sistema de tração integral.',         det:'Em 4WD no asfalto seco: desgaste e dificuldade em curvas. Use 4x4 apenas off-road.'},
-  {id:'seta',    icon:'seta_esq', color:'c-green', nome:'INDICADOR DE DIREÇÃO',desc:'Pisca-pisca de direção ativado.',                             det:'Piscando rápido = lâmpada queimada no circuito. Sempre sinalize ANTES da manobra.'},
-  {id:'luzalta', icon:'luz_alta', color:'c-blue',  nome:'FAROL ALTO',          desc:'Farol pleno ligado.',                                           det:'Use somente em estradas sem iluminação e sem veículos à frente. Deslumbra outros motoristas.'},
-  {id:'dpf',      icon:'dpf',      color:'c-amber', nome:'FILTRO DE FULIGEM',  desc:'Filtro de partículas do diesel entupido — perda de potência.',   det:'Exclusivo de diesel. A regeneração automática exige 20+ minutos acima de 60 km/h constantes. Uso urbano entope frequentemente.'},
-  {id:'agua',    icon:'agua_comb',color:'c-amber', nome:'ÁGUA NO COMBUSTÍVEL', desc:'Contaminação por água no sistema diesel detectada.',             det:'Exclusivo diesel. Água corrói bicos injetores e danifica a bomba de alta pressão. Drene o separador imediatamente.'},
-  {id:'servico', icon:'servico',  color:'c-amber', nome:'REVISÃO PROGRAMADA',  desc:'Manutenção periódica próxima ou vencida.',                       det:'Intervalo atingido (geralmente 10.000 km ou 12 meses). Inclui troca de óleo e filtros.'},
-  {id:'cinto',   icon:'cinto',    color:'c-red',   nome:'CINTO DE SEGURANÇA',  desc:'Ocupante detectado sem cinto afivelhado.',                       det:'O cinto reduz até 45% o risco de morte. Sem cinto, o corpo colide com o painel na mesma velocidade do impacto.'},
-  {id:'porta',   icon:'porta',    color:'c-red',   nome:'PORTA ABERTA',        desc:'Uma ou mais portas não estão completamente fechadas.',           det:'Verifique todas as portas e o porta-malas.'},
-  {id:'cambio',  icon:'cambio',   color:'c-amber', nome:'FALHA NA TRANSMISSÃO',desc:'Problema no câmbio automático — "modo de emergência" ativo.',    det:'O câmbio trava em uma marcha para você chegar a uma oficina. Câmbios automáticos são caríssimos para reparar.'},
-  {id:'injecao', icon:'injecao',  color:'c-amber', nome:'SISTEMA DE INJEÇÃO',  desc:'Falha no gerenciamento eletrônico de combustível.',              det:'Bicos entupidos, sensor MAP, TPS, bomba fraca. Carro engasga, necessário diagnóstico eletrônico.'},
-  {id:'suspensao',icon:'suspensao',color:'c-amber',nome:'SUSPENSÃO / NÍVEL',   desc:'Falha na suspensão eletrônica ou pneumática.',                   det:'Em carros com suspensão a ar: compressor, válvulas ou sensores. Suspensão com defeito prejudica manuseio.'},
-  {id:'check2',  icon:'check',    color:'c-amber', nome:'AVISO GERAL',         desc:'Alerta genérico — verifique o display central.',                  det:'Sempre consulte o display do painel para identificar qual sistema está avisando.'},
+  {id:'motor', icon:'motor', color:'c-amber', nome:'CHECK ENGINE', desc:'Falha detectada no motor ou sistema de emissões pelo ECM.', det:'Indica que o módulo ECM detectou código de falha. Pode ser tampão frouxo, sensor O2, bobina ou catalisador. Leve para leitura OBD-II.'},
+  {id:'oleo', icon:'oleo', color:'c-red', nome:'PRESSÃO DE ÓLEO', desc:'Pressão de lubrificação insuficiente — risco grave ao motor.', det:'EMERGÊNCIA total. Motor sem lubrificação adequada pode fundir em minutos. Pare imediatamente e verifique o nível de óleo.'},
+  {id:'temp', icon:'temp', color:'c-red', nome:'SUPERAQUECIMENTO', desc:'Temperatura do motor acima do limite seguro.', det:'Causas: falta de fluido, termostato travado, ventoinha ou radiador. Pare e NUNCA abra o radiador enquanto estiver quente.'},
+  {id:'bateria', icon:'bateria', color:'c-red', nome:'FALHA DE CARGA', desc:'Alternador não carrega a bateria — carro pode parar em minutos.', det:'Desligue AC e faróis (se possível). Problema na correia, escovas ou regulador do alternador.'},
+  {id:'freio', icon:'freio', color:'c-red', nome:'SISTEMA DE FREIOS', desc:'Freio de mão acionado ou fluido de freio com nível baixo.', det:'Se o freio de mão estiver solto, o fluido está perigosamente baixo ou há vazamento. Freios podem falhar.'},
+  {id:'abs', icon:'abs', color:'c-amber', nome:'FALHA NO ABS', desc:'Antitravamento desativado — maior risco em frenagem brusca.', det:'Sem o ABS, a roda pode travar em frenagens de emergência. A frenagem normal continua funcionando.'},
+  {id:'airbag', icon:'airbag', color:'c-red', nome:'FALHA NO AIRBAG', desc:'Sistema SRS com defeito.', det:'Em impacto, o airbag pode não abrir. Exige diagnóstico especializado com scanner.'},
+  {id:'combustivel', icon:'combustivel', color:'c-amber', nome:'COMBUSTÍVEL', desc:'Reserva ativada.', det:'Dirigir com tanque muito vazio prejudica a bomba, que usa o próprio combustível como lubrificante.'},
+  {id:'direcao', icon:'direcao', color:'c-amber', nome:'DIREÇÃO ELÉTRICA', desc:'Falha na direção assistida.', det:'EPS com defeito. O volante exigirá muita força física para manobrar.'},
+  {id:'tpms', icon:'tpms', color:'c-amber', nome:'PNEU MURCHO', desc:'Pressão baixa detectada pelo TPMS.', det:'Aumenta consumo e risco de estouro. Calibre os pneus o mais rápido possível.'},
+  {id:'esp', icon:'esp', color:'c-amber', nome:'CONTROLE DE ESTAB.', desc:'ESP ativado ou desligado.', det:'Piscando: atuando para corrigir trajetória. Fixo: sistema desligado ou em falha.'},
+  {id:'catalisador', icon:'catalisador', color:'c-amber', nome:'CATALISADOR', desc:'Superaquecimento no escapamento.', det:'Combustível não queimado está chegando no escape. Risco de derreter a colmeia interna do catalisador.'},
+  {id:'w4d', icon:'w4d', color:'c-amber', nome:'TRAÇÃO 4×4', desc:'Modo 4WD ativo ou em falha.', det:'Não use 4x4 bloqueado no asfalto seco, pois causa desgaste prematuro e travamento em curvas.'},
+  {id:'seta', icon:'seta_esq', color:'c-green', nome:'PISCA / SETA', desc:'Indicador de direção acionado.', det:'Se piscar rápido demais, indica que alguma lâmpada do circuito queimou.'},
+  {id:'luzalta', icon:'luz_alta', color:'c-blue', nome:'FAROL ALTO', desc:'Luz alta acionada.', det:'Uso exclusivo para vias não iluminadas sem veículos vindo no sentido contrário.'},
+  {id:'dpf', icon:'dpf', color:'c-amber', nome:'FILTRO DPF', desc:'Filtro de partículas entupido (Diesel).', det:'Exige condução constante em rodovia para queima da fuligem (regeneração).'},
+  {id:'agua', icon:'agua_comb', color:'c-amber', nome:'ÁGUA NO DIESEL', desc:'Contaminação detectada.', det:'Água corrói bicos injetores de alta pressão. Drene o filtro separador imediatamente.'},
+  {id:'servico', icon:'servico', color:'c-amber', nome:'REVISÃO', desc:'Manutenção programada.', det:'Tempo ou quilometragem para troca de óleo e filtros foi atingida.'},
+  {id:'cinto', icon:'cinto', color:'c-red', nome:'CINTO DESATADO', desc:'Ocupante sem cinto de segurança.', det:'Risco gravíssimo. Afivele imediatamente.'},
+  {id:'porta', icon:'porta', color:'c-red', nome:'PORTA ABERTA', desc:'Porta ou porta-malas destravado.', det:'Pare em segurança e verifique o fechamento de todas as portas.'},
+  {id:'cambio', icon:'cambio', color:'c-amber', nome:'FALHA NO CÂMBIO', desc:'Transmissão em modo de segurança.', det:'O câmbio pode travar em 3ª marcha para evitar danos catastróficos. Vá à oficina.'},
+  {id:'injecao', icon:'injecao', color:'c-amber', nome:'INJEÇÃO ELETR.', desc:'Falha elétrica / injeção.', det:'Pode causar cortes na aceleração ou alto consumo. Requer diagnóstico computadorizado.'},
+  {id:'suspensao', icon:'suspensao', color:'c-amber', nome:'SUSPENSÃO', desc:'Falha no ajuste eletrônico.', det:'Em carros com suspensão pneumática, indica problemas no compressor ou bolsas de ar.'},
+  {id:'check', icon:'check', color:'c-amber', nome:'AVISO GERAL', desc:'Alerta genérico no computador.', det:'Leia a mensagem descritiva no painel central LCD do veículo.'}
 ];
 
-let currentIdx = -1;
-let doneSet = new Set();
-let phase = 'idle';
-let shuffled = shuffle([...Array(LIGHTS.length).keys()]);
-let shPos = 0;
+let currentIdx = -1; let doneSet = new Set(); let phase = 'idle';
+let shuffled = shuffle([...Array(LIGHTS.length).keys()]); let shPos = 0;
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
 
@@ -443,15 +357,15 @@ const panel = document.getElementById('lightsPanel');
 const rows = [8,8,8];
 let li = 0;
 rows.forEach(cnt=>{
-  const row = document.createElement('div');
-  row.className = 'lights-row';
-  for(let i=0;i<cnt && li<LIGHTS.length;i++,li++){
+  const row = document.createElement('div'); row.className = 'lights-row';
+  for(let i=0; i<cnt && li<LIGHTS.length; i++, li++){
     const l = LIGHTS[li];
     const btn = document.createElement('div');
     btn.className = `light-btn ${l.color}`;
     btn.id = `lb-${li}`;
-    btn.innerHTML = `<img src="${IMGS[l.icon]}" alt="${l.nome}" loading="lazy">`;
     btn.title = l.nome;
+    // Puxando do dicionário de ícones vetoriais
+    btn.innerHTML = `<div class="icon-wrap">${ICONS[l.icon]}</div>`;
     btn.addEventListener('click',()=>activate(li));
     row.appendChild(btn);
   }
@@ -465,16 +379,13 @@ function activate(idx){
   const btn = document.getElementById(`lb-${idx}`);
   if(!btn) return;
   btn.classList.add('active');
-  currentIdx = idx;
-  phase = 'question';
-  render();
+  currentIdx = idx; phase = 'question'; render();
 }
 
 function nextAuto(){
   if(doneSet.size >= LIGHTS.length){ showComplete(); return; }
   if(shPos >= shuffled.length){ shPos=0; shuffled=shuffle([...Array(LIGHTS.length).keys()]); }
-  let next = shuffled[shPos++];
-  let tries=0;
+  let next = shuffled[shPos++]; let tries=0;
   while(doneSet.has(next) && tries<LIGHTS.length){
     if(shPos>=shuffled.length){shPos=0;shuffled=shuffle([...Array(LIGHTS.length).keys()]);}
     next=shuffled[shPos++]; tries++;
@@ -483,38 +394,26 @@ function nextAuto(){
 }
 
 function reveal(){
-  phase = 'revealed';
-  doneSet.add(currentIdx);
+  phase = 'revealed'; doneSet.add(currentIdx);
   const btn = document.getElementById(`lb-${currentIdx}`);
   btn.classList.add('done');
-  playSound('triangle', 400, 0.2, 0.08);
-  setTimeout(()=>playSound('triangle', 600, 0.3, 0.06), 120);
+  playSound('triangle', 400, 0.2, 0.08); setTimeout(()=>playSound('triangle', 600, 0.3, 0.06), 120);
   render();
 }
 
 function showComplete(){
   playSound('square', 300, 0.6, 0.1);
-  const card = document.getElementById('quizCard');
-  const btnRow = document.getElementById('btnRow');
-  const progFill = document.getElementById('progFill');
-  progFill.style.width = '100%';
-  
-  card.innerHTML = `
-    <div class="q-phase slidein" style="color:#00ff88">★ CHECK-UP COMPLETO ★</div>
-    <div class="q-name slidein" style="color:#fff">DIAGNÓSTICO FINALIZADO</div>
-    <div class="q-desc slidein">Você identificou com sucesso todos os sistemas de alerta do cockpit!</div>
-  `;
+  const card = document.getElementById('quizCard'); const btnRow = document.getElementById('btnRow');
+  document.getElementById('progFill').style.width = '100%';
+  card.innerHTML = `<div class="q-phase slidein" style="color:#00ff88">★ CHECK-UP COMPLETO ★</div><div class="q-name slidein" style="color:#fff">DIAGNÓSTICO FINALIZADO</div><div class="q-desc slidein">Todos os sistemas operacionais e mapeados com sucesso!</div>`;
   btnRow.innerHTML = `<button class="btn btn-restart slidein" onclick="location.reload()">Reiniciar Simulador</button>`;
 }
 
 function render(){
-  const card = document.getElementById('quizCard');
-  const btnRow = document.getElementById('btnRow');
-  const progFill = document.getElementById('progFill');
+  const card = document.getElementById('quizCard'); const btnRow = document.getElementById('btnRow');
   const scoreTxt = document.getElementById('scoreTxt');
-
   if(scoreTxt) scoreTxt.innerText = `${doneSet.size} / ${LIGHTS.length}`;
-  progFill.style.width = `${(doneSet.size / LIGHTS.length) * 100}%`;
+  document.getElementById('progFill').style.width = `${(doneSet.size / LIGHTS.length) * 100}%`;
 
   const l = LIGHTS[currentIdx];
   const iconColor = l.color.replace('c-', 'tc-');
@@ -523,26 +422,20 @@ function render(){
     card.innerHTML = `
       <div class="score">${doneSet.size} / ${LIGHTS.length}</div>
       <div class="q-phase slidein" style="color:#ffcc00">⚠ ALERTA ATIVO ⚠</div>
-      <div class="q-big-icon ${iconColor} slidein"><img src="${IMGS[l.icon]}" alt="${l.nome}"></div>
+      <div class="q-big-icon ${iconColor} slidein">${ICONS[l.icon]}</div>
       <div class="q-name slidein" style="color:#fff">IDENTIFIQUE O SÍMBOLO</div>
-      <div class="q-desc slidein">Tente nomear a função desta luz antes de revelar a resposta técnica.</div>
+      <div class="q-desc slidein">Tente nomear a função desta luz antes de revelar a resposta.</div>
     `;
-    btnRow.innerHTML = `
-      <button class="btn btn-reveal slidein" onclick="reveal()">Revelar Resposta</button>
-      <button class="btn btn-next slidein" onclick="nextAuto()">Pular Luz</button>
-    `;
+    btnRow.innerHTML = `<button class="btn btn-reveal slidein" onclick="reveal()">Revelar Resposta</button><button class="btn btn-next slidein" onclick="nextAuto()">Pular Luz</button>`;
   }
   else if(phase === 'revealed'){
     card.innerHTML = `
       <div class="score">${doneSet.size} / ${LIGHTS.length}</div>
       <div class="q-phase slidein" style="color:#00ff88">✔ SISTEMA IDENTIFICADO</div>
-      <div class="q-big-icon ${iconColor} slidein"><img src="${IMGS[l.icon]}" alt="${l.nome}"></div>
+      <div class="q-big-icon ${iconColor} slidein">${ICONS[l.icon]}</div>
       <div class="q-name ${iconColor} slidein">${l.nome}</div>
       <div class="q-desc slidein">${l.desc}</div>
-      <div class="q-detail-box slidein">
-        <div class="q-detail-title">ANÁLISE TÉCNICA E AÇÃO:</div>
-        <div class="q-detail-text">${l.det}</div>
-      </div>
+      <div class="q-detail-box slidein"><div class="q-detail-title">AÇÃO RECOMENDADA:</div><div class="q-detail-text">${l.det}</div></div>
     `;
     btnRow.innerHTML = `<button class="btn btn-next slidein" onclick="nextAuto()">Próximo Alerta ➔</button>`;
   }
