@@ -3,1160 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Carro — Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Dashboard Pro - Ultra Realism</title>
 <style>
-  :root {
-    --bg: #0a0a0c;
-    --panel: #111116;
-    --panel2: #16161d;
-    --rim: #1e1e28;
-    --rim2: #252532;
-    --glow-red: #ff2020;
-    --glow-amber: #ff9500;
-    --glow-green: #00e676;
-    --glow-blue: #2979ff;
-    --glow-yellow: #ffd600;
-    --glow-orange: #ff6d00;
-    --glow-cyan: #00e5ff;
-    --dim: #2a2a36;
-    --text: #c8c8d4;
-    --text2: #686880;
-    --needle: #e8e0c8;
-    --font-display: 'Orbitron', monospace;
-    --font-body: 'Rajdhani', sans-serif;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    --bg-black: #020202;
+    --card-bg: rgba(15, 15, 20, 0.95);
+    --led-red: #ff3131;
+    --led-amber: #ff9d00;
+    --led-green: #22ff88;
+    --led-blue: #22ccff;
+    --border-glass: rgba(255, 255, 255, 0.1);
+}
 
-  body {
-    background: var(--bg);
-    font-family: var(--font-body);
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+body {
+    background: var(--bg-black);
+    background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000 80%);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 24px 16px 40px;
-    overflow-x: hidden;
-  }
+    overflow: hidden;
+}
 
-  /* ── TOP TITLE ── */
-  .top-title {
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    color: var(--text2);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  /* ═══════════════════════════════
-     DASHBOARD SHELL
-  ═══════════════════════════════ */
-  .dashboard {
-    width: 100%;
-    max-width: 860px;
-    background: linear-gradient(160deg, #18181f 0%, #0e0e14 100%);
-    border-radius: 28px 28px 60px 60px;
-    border: 1px solid var(--rim2);
-    padding: 28px 28px 36px;
-    position: relative;
-    box-shadow:
-      0 0 0 1px #0a0a10,
-      0 2px 80px rgba(0,0,0,0.8),
-      inset 0 1px 0 rgba(255,255,255,0.04);
-  }
-
-  /* Carbon-fiber texture overlay */
-  .dashboard::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background-image:
-      repeating-linear-gradient(
-        45deg,
-        rgba(255,255,255,0.008) 0px,
-        rgba(255,255,255,0.008) 1px,
-        transparent 1px,
-        transparent 6px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        rgba(255,255,255,0.008) 0px,
-        rgba(255,255,255,0.008) 1px,
-        transparent 1px,
-        transparent 6px
-      );
-    pointer-events: none;
-    border-radius: inherit;
-  }
-
-  /* ── GAUGE ROW ── */
-  .gauge-row {
+/* PAINEL PRINCIPAL */
+.dashboard-container {
+    width: 950px;
+    padding: 30px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glass);
+    border-radius: 35px;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(255,255,255,0.02);
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 16px;
-    align-items: end;
-    margin-bottom: 24px;
-  }
-
-  /* ── SPEEDOMETER & TACHOMETER ── */
-  .gauge-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .gauge-label {
-    font-family: var(--font-display);
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    color: var(--text2);
-    text-transform: uppercase;
-  }
-
-  .gauge-svg {
-    width: 200px;
-    height: 140px;
-    overflow: visible;
-  }
-
-  .gauge-track {
-    fill: none;
-    stroke: var(--rim);
-    stroke-width: 12;
-    stroke-linecap: round;
-  }
-
-  .gauge-fill {
-    fill: none;
-    stroke-width: 12;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.8s cubic-bezier(0.25,1,0.5,1);
-  }
-
-  .gauge-needle {
-    transform-origin: 100px 100px;
-    transition: transform 0.8s cubic-bezier(0.25,1,0.5,1);
-  }
-
-  .gauge-value {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    fill: var(--needle);
-    text-anchor: middle;
-    dominant-baseline: middle;
-  }
-
-  .gauge-unit {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 300;
-    fill: var(--text2);
-    text-anchor: middle;
-  }
-
-  .gauge-tick {
-    stroke: var(--text2);
-    stroke-width: 1;
-    opacity: 0.5;
-  }
-
-  .gauge-tick-label {
-    font-family: var(--font-display);
-    font-size: 8px;
-    fill: var(--text2);
-    text-anchor: middle;
-  }
-
-  /* ── CENTER CLUSTER ── */
-  .center-cluster {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    min-width: 200px;
-  }
-
-  /* FUEL & TEMP gauges (bar) */
-  .mini-gauge-row {
-    display: flex;
+    grid-template-columns: 220px 1fr 220px;
     gap: 20px;
-    align-items: flex-end;
-  }
-
-  .mini-gauge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .mini-bar-wrap {
-    width: 18px;
-    height: 80px;
-    background: var(--rim);
-    border-radius: 9px;
-    overflow: hidden;
     position: relative;
-    border: 1px solid var(--rim2);
-  }
+}
 
-  .mini-bar-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 9px;
-    transition: height 0.8s ease;
-  }
-
-  .mini-bar-fill.fuel { background: linear-gradient(to top, #2979ff, #82b1ff); height: 60%; }
-  .mini-bar-fill.temp { background: linear-gradient(to top, #ff6d00, #ff2020); height: 30%; }
-
-  .mini-label {
-    font-family: var(--font-display);
-    font-size: 7px;
-    letter-spacing: 0.15em;
-    color: var(--text2);
-    text-transform: uppercase;
-  }
-
-  /* ODOMETER */
-  .odometer {
-    background: var(--bg);
-    border: 1px solid var(--rim2);
-    border-radius: 6px;
-    padding: 6px 14px;
-    font-family: var(--font-display);
-    font-size: 16px;
-    font-weight: 700;
-    color: #ff9500;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 12px rgba(255,149,0,0.6);
-    white-space: nowrap;
-  }
-
-  .odo-label {
-    font-family: var(--font-display);
-    font-size: 7px;
-    letter-spacing: 0.2em;
-    color: var(--text2);
-  }
-
-  /* ── GEAR INDICATOR ── */
-  .gear-display {
-    background: var(--bg);
-    border: 1px solid var(--rim2);
-    border-radius: 8px;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--glow-green);
-    text-shadow: 0 0 14px var(--glow-green);
-  }
-
-  /* ═══════════════════════════════
-     WARNING LIGHT GRID
-  ═══════════════════════════════ */
-  .warning-section {
-    margin-bottom: 22px;
-  }
-
-  .section-label {
-    font-family: var(--font-display);
-    font-size: 8px;
-    letter-spacing: 0.3em;
-    color: var(--text2);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-left: 2px;
-  }
-
-  .warning-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
-  }
-
-  .warn-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    padding: 10px 6px 8px;
-    background: var(--panel);
-    border: 1px solid var(--rim);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-    user-select: none;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .warn-cell:hover { background: var(--panel2); border-color: var(--rim2); }
-  .warn-cell:active { transform: scale(0.96); }
-
-  .warn-cell.quiz-highlight {
-    animation: pulse-border 1s ease-in-out infinite;
-  }
-
-  @keyframes pulse-border {
-    0%, 100% { box-shadow: none; }
-    50% { box-shadow: 0 0 0 2px #fff3; }
-  }
-
-  /* glow states */
-  .warn-cell.lit-red    { background: #1a0808; border-color: var(--glow-red); }
-  .warn-cell.lit-amber  { background: #1a1000; border-color: var(--glow-amber); }
-  .warn-cell.lit-green  { background: #001a0a; border-color: var(--glow-green); }
-  .warn-cell.lit-blue   { background: #080f1a; border-color: var(--glow-blue); }
-  .warn-cell.lit-orange { background: #1a0c00; border-color: var(--glow-orange); }
-  .warn-cell.lit-cyan   { background: #001a1a; border-color: var(--glow-cyan); }
-
-  .warn-icon-wrap {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    transition: background 0.2s, box-shadow 0.2s;
-    position: relative;
-  }
-
-  /* icon glow when lit */
-  .lit-red    .warn-icon-wrap { background: rgba(255,32,32,0.18);  box-shadow: 0 0 14px 3px rgba(255,32,32,0.45);  }
-  .lit-amber  .warn-icon-wrap { background: rgba(255,149,0,0.18);  box-shadow: 0 0 14px 3px rgba(255,149,0,0.45);  }
-  .lit-green  .warn-icon-wrap { background: rgba(0,230,118,0.18);  box-shadow: 0 0 14px 3px rgba(0,230,118,0.45);  }
-  .lit-blue   .warn-icon-wrap { background: rgba(41,121,255,0.18); box-shadow: 0 0 14px 3px rgba(41,121,255,0.45); }
-  .lit-orange .warn-icon-wrap { background: rgba(255,109,0,0.18);  box-shadow: 0 0 14px 3px rgba(255,109,0,0.45);  }
-  .lit-cyan   .warn-icon-wrap { background: rgba(0,229,255,0.18);  box-shadow: 0 0 14px 3px rgba(0,229,255,0.45);  }
-
-  .warn-name {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text2);
-    text-align: center;
-    line-height: 1.2;
-    max-width: 76px;
-    transition: color 0.2s;
-  }
-
-  .lit-red    .warn-name { color: var(--glow-red); }
-  .lit-amber  .warn-name { color: var(--glow-amber); }
-  .lit-green  .warn-name { color: var(--glow-green); }
-  .lit-blue   .warn-name { color: var(--glow-blue); }
-  .lit-orange .warn-name { color: var(--glow-orange); }
-  .lit-cyan   .warn-name { color: var(--glow-cyan); }
-
-  /* SVG warning icons */
-  .warn-svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* ═══════════════════════════════
-     STEERING WHEEL DECO (bottom)
-  ═══════════════════════════════ */
-  .wheel-deco {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 6px solid var(--rim2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    bottom: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--panel);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
-  }
-
-  .wheel-inner {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--rim2);
-    border: 2px solid #2e2e3e;
-  }
-
-  /* ═══════════════════════════════
-     QUIZ SECTION
-  ═══════════════════════════════ */
-  .quiz-section {
-    width: 100%;
-    max-width: 860px;
-    margin-top: 60px;
-  }
-
-  .quiz-panel {
-    background: linear-gradient(160deg, #13131a 0%, #0d0d12 100%);
-    border: 1px solid var(--rim2);
+/* DISPLAY CENTRAL */
+.center-hud {
+    grid-column: 2;
+    background: #000;
+    border: 2px solid #111;
     border-radius: 20px;
-    padding: 28px 32px;
-    position: relative;
-    box-shadow: 0 8px 60px rgba(0,0,0,0.6);
-  }
-
-  /* progress */
-  .quiz-progress-wrap {
-    width: 100%;
-    height: 3px;
-    background: var(--rim);
-    border-radius: 2px;
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
-
-  .quiz-progress-bar {
-    height: 100%;
-    background: var(--glow-cyan);
-    border-radius: 2px;
-    box-shadow: 0 0 8px var(--glow-cyan);
-    transition: width 0.4s ease;
-  }
-
-  .quiz-meta {
+    height: 280px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .quiz-num {
-    font-family: var(--font-display);
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    color: var(--glow-cyan);
-    text-shadow: 0 0 10px var(--glow-cyan);
-  }
-
-  .quiz-score-badge {
-    font-family: var(--font-display);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--glow-amber);
-    background: rgba(255,149,0,0.08);
-    border: 1px solid rgba(255,149,0,0.25);
-    border-radius: 6px;
-    padding: 4px 12px;
-  }
-
-  .quiz-question-row {
-    display: flex;
-    gap: 18px;
-    align-items: flex-start;
-    margin-bottom: 22px;
-  }
-
-  .quiz-icon-preview {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-    border: 2px solid var(--rim2);
-    background: var(--panel);
-    transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
-  }
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(0,0,0,1);
+    border: 1px solid rgba(255,157,0,0.2);
+}
 
-  .quiz-icon-preview.glow-red    { background: rgba(255,32,32,0.15);  box-shadow: 0 0 20px rgba(255,32,32,0.5);  border-color: var(--glow-red);    }
-  .quiz-icon-preview.glow-amber  { background: rgba(255,149,0,0.15);  box-shadow: 0 0 20px rgba(255,149,0,0.5);  border-color: var(--glow-amber);  }
-  .quiz-icon-preview.glow-green  { background: rgba(0,230,118,0.15);  box-shadow: 0 0 20px rgba(0,230,118,0.5);  border-color: var(--glow-green);  }
-  .quiz-icon-preview.glow-blue   { background: rgba(41,121,255,0.15); box-shadow: 0 0 20px rgba(41,121,255,0.5); border-color: var(--glow-blue);   }
-  .quiz-icon-preview.glow-orange { background: rgba(255,109,0,0.15);  box-shadow: 0 0 20px rgba(255,109,0,0.5);  border-color: var(--glow-orange); }
-  .quiz-icon-preview.glow-cyan   { background: rgba(0,229,255,0.15);  box-shadow: 0 0 20px rgba(0,229,255,0.5);  border-color: var(--glow-cyan);   }
+.scanline {
+    position: absolute; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 50%);
+    background-size: 100% 4px; pointer-events: none; opacity: 0.2;
+}
 
-  .quiz-q-text {
-    font-family: var(--font-body);
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.5;
-    padding-top: 8px;
-  }
+.hud-title { font-family: 'Orbitron'; font-size: 12px; color: #555; letter-spacing: 3px; margin-bottom: 20px; }
+.hud-main-text { font-family: 'Orbitron'; font-size: 28px; color: var(--led-amber); text-shadow: 0 0 15px var(--led-amber); text-align: center; }
 
-  .options-grid {
+/* SLOTS DE LUZES */
+.side-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 18px;
-  }
+    gap: 15px;
+}
 
-  @media (max-width: 480px) {
-    .options-grid { grid-template-columns: 1fr; }
-  }
-
-  .opt-btn {
-    background: var(--panel);
-    border: 1px solid var(--rim2);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s, border-color 0.15s, transform 0.1s;
-    line-height: 1.4;
-  }
-
-  .opt-btn:hover:not(:disabled) {
-    background: var(--panel2);
-    border-color: rgba(0,229,255,0.3);
-    color: #fff;
-  }
-
-  .opt-btn:active:not(:disabled) { transform: scale(0.98); }
-
-  .opt-btn.correct {
-    background: rgba(0,230,118,0.12);
-    border-color: var(--glow-green);
-    color: var(--glow-green);
-    text-shadow: 0 0 10px rgba(0,230,118,0.4);
-  }
-
-  .opt-btn.wrong {
-    background: rgba(255,32,32,0.1);
-    border-color: var(--glow-red);
-    color: var(--glow-red);
-  }
-
-  .opt-btn:disabled { cursor: default; }
-
-  /* Feedback */
-  .feedback-box {
-    display: none;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
-
-  .feedback-box.show { display: block; }
-
-  .feedback-box.ok {
-    background: rgba(0,230,118,0.08);
-    border: 1px solid rgba(0,230,118,0.25);
-    color: #80e8a8;
-  }
-
-  .feedback-box.err {
-    background: rgba(255,32,32,0.08);
-    border: 1px solid rgba(255,32,32,0.2);
-    color: #ff8080;
-  }
-
-  .quiz-footer {
+.light-box {
+    aspect-ratio: 1;
+    background: linear-gradient(145deg, #111, #080808);
+    border: 1px solid #1a1a1a;
+    border-radius: 15px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  .next-btn {
-    display: none;
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--bg);
-    background: var(--glow-cyan);
-    border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: opacity 0.15s, transform 0.1s;
-    box-shadow: 0 0 20px rgba(0,229,255,0.4);
-  }
-
-  .next-btn.show { display: block; }
-  .next-btn:hover { opacity: 0.85; }
-  .next-btn:active { transform: scale(0.97); }
-
-  /* FINISH */
-  .finish-overlay {
-    display: none;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    padding: 20px 0 8px;
-    text-align: center;
-  }
-
-  .finish-overlay.show { display: flex; }
-
-  .finish-big {
-    font-family: var(--font-display);
-    font-size: 56px;
-    font-weight: 900;
-    color: var(--glow-cyan);
-    text-shadow: 0 0 40px var(--glow-cyan);
-  }
-
-  .finish-sub {
-    font-family: var(--font-body);
-    font-size: 16px;
-    color: var(--text2);
-    max-width: 380px;
-    line-height: 1.5;
-  }
-
-  .finish-stars {
-    font-size: 28px;
-    letter-spacing: 6px;
-  }
-
-  .restart-btn {
-    font-family: var(--font-display);
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    color: var(--bg);
-    background: var(--glow-amber);
-    border: none;
-    border-radius: 8px;
-    padding: 12px 32px;
+    justify-content: center;
     cursor: pointer;
-    text-transform: uppercase;
-    box-shadow: 0 0 24px rgba(255,149,0,0.45);
-    transition: opacity 0.15s;
+    transition: 0.2s;
+    position: relative;
+    padding: 10px;
+}
+
+.light-box svg {
+    width: 35px;
+    height: 35px;
+    fill: rgba(255,255,255,0.05); /* Desligado */
+    transition: 0.3s;
+}
+
+.light-label {
+    font-size: 9px;
+    color: #444;
     margin-top: 8px;
-  }
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
 
-  .restart-btn:hover { opacity: 0.85; }
+/* EFEITOS DE ATIVAÇÃO (GLOW REAL) */
+.active.c-red svg { fill: var(--led-red); filter: drop-shadow(0 0 8px var(--led-red)); }
+.active.c-amber svg { fill: var(--led-amber); filter: drop-shadow(0 0 8px var(--led-amber)); }
+.active.c-green svg { fill: var(--led-green); filter: drop-shadow(0 0 8px var(--led-green)); }
+.active.c-blue svg { fill: var(--led-blue); filter: drop-shadow(0 0 8px var(--led-blue)); }
 
-  /* ── NEEDLE ANIMATION ── */
-  @keyframes boot-sweep {
-    0%   { transform: rotate(-130deg); }
-    60%  { transform: rotate(50deg); }
-    80%  { transform: rotate(30deg); }
-    100% { transform: rotate(VAR_END); }
-  }
+.active .light-label { color: #eee; }
 
-  /* ── SCANLINE ── */
-  .dashboard::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.04) 3px,
-      rgba(0,0,0,0.04) 4px
-    );
-    pointer-events: none;
-  }
+/* BOTÃO START ENGINE */
+.start-btn-container {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-  /* responsive */
-  @media (max-width: 600px) {
-    .gauge-svg { width: 140px; height: 98px; }
-    .gauge-value { font-size: 20px; }
-    .warning-grid { grid-template-columns: repeat(auto-fill, minmax(76px,1fr)); }
-  }
+.start-btn {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #331111, #110000);
+    border: 5px solid #222;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.start-btn:hover { border-color: var(--led-red); }
+.start-btn:active { transform: scale(0.95); }
+
+.start-btn .text-top { font-family: 'Orbitron'; font-size: 14px; color: #fff; font-weight: 900; }
+.start-btn .text-bot { font-size: 10px; color: #666; margin-top: 5px; }
+
+.on-fire {
+    box-shadow: 0 0 40px rgba(255, 49, 49, 0.4), inset 0 0 20px var(--led-red);
+    border-color: var(--led-red) !important;
+}
+
 </style>
 </head>
 <body>
 
-<div class="top-title">Sistema de instrumentação</div>
-
-<!-- ═══════ PAINEL ═══════ -->
-<div class="dashboard">
-
-  <!-- GAUGE ROW -->
-  <div class="gauge-row">
-
-    <!-- TACHOMETER (RPM) -->
-    <div class="gauge-wrap">
-      <span class="gauge-label">RPM ×1000</span>
-      <svg class="gauge-svg" viewBox="0 0 200 140" id="tacho-svg">
-        <!-- ticks -->
-        <g id="tacho-ticks"></g>
-        <!-- track -->
-        <path id="tacho-track" class="gauge-track" d="M 22 118 A 80 80 0 1 1 178 118" />
-        <!-- red zone -->
-        <path fill="none" stroke="rgba(255,32,32,0.25)" stroke-width="12" stroke-linecap="round"
-          d="M 22 118 A 80 80 0 1 1 178 118"
-          stroke-dasharray="352 1000"
-          stroke-dashoffset="-264" />
-        <!-- fill -->
-        <path id="tacho-fill" class="gauge-fill" stroke="#ff2020"
-          d="M 22 118 A 80 80 0 1 1 178 118"
-          stroke-dasharray="0 352" stroke-dashoffset="0"/>
-        <!-- needle -->
-        <g id="tacho-needle" class="gauge-needle" style="transform: rotate(-130deg)">
-          <line x1="100" y1="100" x2="100" y2="36" stroke="var(--glow-red)" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="100" cy="100" r="6" fill="var(--panel2)" stroke="#555" stroke-width="1"/>
-        </g>
-        <text x="100" y="115" class="gauge-value" id="tacho-val">0</text>
-        <text x="100" y="130" class="gauge-unit">RPM ×1000</text>
-      </svg>
-    </div>
-
-    <!-- CENTER -->
-    <div class="center-cluster">
-      <!-- mini gauges: FUEL + TEMP -->
-      <div class="mini-gauge-row">
-        <div class="mini-gauge">
-          <div class="mini-bar-wrap">
-            <div class="mini-bar-fill fuel" id="fuel-bar" style="height:62%"></div>
-          </div>
-          <span class="mini-label">Comb</span>
+<div class="dashboard-container">
+    
+    <div class="side-panel">
+        <div class="light-box c-amber" onclick="toggle(this, 'MOTOR', 'FALHA DE INJEÇÃO')">
+            <svg viewBox="0 0 512 512"><path d="M495.9 166.6c-3.1 10.5-14.2 16.5-24.7 13.4s-16.5-14.2-13.4-24.7l12.9-43.7c3.1-10.5 14.2-16.5 24.7-13.4s16.5 14.2 13.4 24.7l-12.9 43.7zM64 352c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32H96V128c0-17.7 14.3-32 32-32h64c17.7 0 32 14.3 32 32v32h128V128c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32v121.1c25.4 12.1 42.1 36.6 42.1 64.9V352c0 17.7-14.3 32-32 32H64zM160 320a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+            <div class="light-label">Motor</div>
         </div>
-        <div class="mini-gauge">
-          <div class="mini-bar-wrap">
-            <div class="mini-bar-fill temp" id="temp-bar" style="height:28%"></div>
-          </div>
-          <span class="mini-label">Temp</span>
+        <div class="light-box c-red" onclick="toggle(this, 'ÓLEO', 'PRESSÃO DE ÓLEO CRÍTICA')">
+            <svg viewBox="0 0 640 512"><path d="M128 32C92.7 32 64 60.7 64 96V312.3c-36.4 11.2-64 44.8-64 85c0 47.1 36.6 85.9 82.5 86.6L448 483.9l.4 0c1.2 0 2.4-.1 3.5-.2c56.8-5.3 101.4-51.2 104.1-108.3c.4-7.9-5.9-14.5-13.8-14.1l-102.3 5c-15.1 .7-27.1-11.4-26.4-26.5c.6-11.8 10.3-21.3 22.1-21.3H560c44.2 0 80-35.8 80-80s-35.8-80-80-80h-48V114.7c0-11-6.1-21-15.8-25.9L304.3 1.1c-13.6-6.8-29.8-1.3-36.6 12.3L208.5 112H128V32z"/></svg>
+            <div class="light-label">Óleo</div>
         </div>
-      </div>
-      <div style="text-align:center">
-        <div class="odo-label">ODÔMETRO km</div>
-        <div class="odometer" id="odo">087 432</div>
-      </div>
-      <div class="gear-display" id="gear">D</div>
+        <div class="light-box c-red" onclick="toggle(this, 'TEMPERATURA', 'SUPERAQUECIMENTO')">
+            <svg viewBox="0 0 320 512"><path d="M160 64c-26.5 0-48 21.5-48 48V300.7c-20.3 14.9-32 38.4-32 63.3c0 44.2 35.8 80 80 80s80-35.8 80-80c0-24.9-11.7-48.4-32-63.3V112c0-26.5-21.5-48-48-48z"/></svg>
+            <div class="light-label">Temp</div>
+        </div>
+        <div class="light-box c-amber" onclick="toggle(this, 'TPMS', 'PNEU MURCHO DETECTADO')">
+            <svg viewBox="0 0 512 512">
+                <path d="M128 448c-35.3 0-64-28.7-64-64v-64c0-106 86-192 192-192s192 86 192 192v64c0 35.3-28.7 64-64 64H128zm128-288c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32s32-14.3 32-32v-96c0-17.7-14.3-32-32-32zm0 192a24 24 0 1 0 0 48 24 24 0 1 0 0-48z"/>
+                <path d="M448 352h32c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32h-32v-96zM32 352h32v96H32c-17.7 0-32-14.3-32-32v-32c0-17.7 14.3-32 32-32z" opacity="0.3"/>
+            </svg>
+            <div class="light-label">Pneu</div>
+        </div>
     </div>
 
-    <!-- SPEEDOMETER -->
-    <div class="gauge-wrap">
-      <span class="gauge-label">km/h</span>
-      <svg class="gauge-svg" viewBox="0 0 200 140" id="speed-svg">
-        <g id="speed-ticks"></g>
-        <path id="speed-track" class="gauge-track" d="M 22 118 A 80 80 0 1 1 178 118"/>
-        <!-- fill -->
-        <path id="speed-fill" class="gauge-fill" stroke="#00e5ff"
-          d="M 22 118 A 80 80 0 1 1 178 118"
-          stroke-dasharray="0 352" stroke-dashoffset="0"/>
-        <g id="speed-needle" class="gauge-needle" style="transform: rotate(-130deg)">
-          <line x1="100" y1="100" x2="100" y2="32" stroke="var(--glow-cyan)" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="100" cy="100" r="7" fill="var(--panel2)" stroke="#444" stroke-width="1.5"/>
-        </g>
-        <text x="100" y="113" class="gauge-value" id="speed-val">0</text>
-        <text x="100" y="130" class="gauge-unit">km/h</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- WARNING LIGHTS -->
-  <div class="warning-section">
-    <div class="section-label">Luzes de advertência — clique para acender</div>
-    <div class="warning-grid" id="warn-grid"></div>
-  </div>
-
-  <!-- Steering wheel deco -->
-  <div class="wheel-deco"><div class="wheel-inner"></div></div>
-</div>
-
-<!-- ═══════ QUIZ ═══════ -->
-<div class="quiz-section">
-  <div class="quiz-panel" id="quiz-panel">
-    <div class="quiz-progress-wrap">
-      <div class="quiz-progress-bar" id="q-progress" style="width:0%"></div>
+    <div class="center-hud" id="hud">
+        <div class="scanline"></div>
+        <div class="hud-title">COMPUTADOR DE BORDO</div>
+        <div class="hud-main-text" id="statusText">SISTEMA OFFLINE</div>
+        <div style="color:#555; margin-top:10px; font-size:12px;">PRESSIONE START</div>
     </div>
 
-    <div class="quiz-meta">
-      <span class="quiz-num" id="q-num">PERGUNTA 01 / 10</span>
-      <span class="quiz-score-badge" id="q-score">PONTOS: 0</span>
+    <div class="side-panel">
+        <div class="light-box c-amber" onclick="toggle(this, 'DIREÇÃO', 'FALHA DIREÇÃO HIDRÁULICA')">
+            <svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.3-208-208S141.3 48 256 48s208 93.3 208 208s-93.3 208-208 208zM336 256c0 44.2-35.8 80-80 80s-80-35.8-80-80s35.8-80 80-80s80 35.8 80 80z"/></svg>
+            <div class="light-label">Direção</div>
+        </div>
+        <div class="light-box c-green" onclick="toggle(this, 'NEBLINA', 'FAROL AUXILIAR ATIVO')">
+            <svg viewBox="0 0 512 512"><path d="M0 192c0-17.7 14.3-32 32-32H192c17.7 0 32 14.3 32 32v128c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V192zM352 160c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H352zm0 128c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H352z"/></svg>
+            <div class="light-label">Neblina</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'AIRBAG', 'FALHA NO SISTEMA SRS')">
+            <svg viewBox="0 0 512 512"><path d="M256 0c141.4 0 256 114.6 256 256s-114.6 256-256 256S0 397.4 0 256S114.6 0 256 0zM164.1 228.3c-10.3 0-18.1 8.9-16.8 19.1c5.1 40.2 39.3 71.3 80.7 71.3s75.6-31.1 80.7-71.3c1.3-10.2-6.5-19.1-16.8-19.1H164.1z"/></svg>
+            <div class="light-label">Airbag</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'CINTO', 'AFIVELE OS CINTOS')">
+            <svg viewBox="0 0 512 512"><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM176 256a80 80 0 1 1 160 0 80 80 0 1 1 -160 0z"/></svg>
+            <div class="light-label">Cinto</div>
+        </div>
     </div>
 
-    <!-- question -->
-    <div id="quiz-main">
-      <div class="quiz-question-row">
-        <div class="quiz-icon-preview" id="q-icon">❓</div>
-        <p class="quiz-q-text" id="q-text">Carregando…</p>
-      </div>
-      <div class="options-grid" id="opts"></div>
-      <div class="feedback-box" id="feedback"></div>
-      <div class="quiz-footer">
-        <button class="next-btn" id="next-btn" onclick="nextQ()">PRÓXIMA →</button>
-      </div>
+    <div class="start-btn-container">
+        <button class="start-btn" id="startBtn" onclick="ignition()">
+            <div class="text-top">START</div>
+            <div class="text-bot">ENGINE</div>
+        </button>
     </div>
 
-    <!-- finish -->
-    <div class="finish-overlay" id="finish">
-      <div class="finish-stars" id="finish-stars">⭐⭐⭐</div>
-      <div class="finish-big" id="finish-big">0/10</div>
-      <div class="finish-sub" id="finish-sub">Resultado</div>
-      <button class="restart-btn" onclick="restart()">JOGAR NOVAMENTE</button>
-    </div>
-  </div>
 </div>
 
 <script>
-/* ─────────────────────────────
-   INDICATOR DATA
-───────────────────────────── */
-const INDICATORS = [
-  { id:'battery',  emoji:'⚡', label:'Bateria',          color:'red'    },
-  { id:'oil',      emoji:'🛢', label:'Pressão óleo',     color:'red'    },
-  { id:'temp',     emoji:'🌡', label:'Temperatura',      color:'red'    },
-  { id:'fuel',     emoji:'⛽', label:'Combustível',      color:'amber'  },
-  { id:'check',    emoji:'⚙', label:'Check Engine',     color:'amber'  },
-  { id:'seatbelt', emoji:'👤', label:'Cinto',            color:'red'    },
-  { id:'door',     emoji:'🚪', label:'Porta aberta',     color:'orange' },
-  { id:'abs',      emoji:'🔴', label:'ABS',              color:'amber'  },
-  { id:'airbag',   emoji:'💥', label:'Airbag',           color:'red'    },
-  { id:'lowbeam',  emoji:'💡', label:'Farol baixo',      color:'green'  },
-  { id:'highbeam', emoji:'🔆', label:'Farol alto',       color:'blue'   },
-  { id:'fog',      emoji:'🌫', label:'Neblina',          color:'amber'  },
-  { id:'tpms',     emoji:'⬤',  label:'Pressão pneu',     color:'amber'  },
-  { id:'esp',      emoji:'🔄', label:'ESP / Estabil.',   color:'amber'  },
-  { id:'park',     emoji:'🅿', label:'Freio de mão',     color:'red'    },
-  { id:'service',  emoji:'🔧', label:'Revisão',          color:'amber'  },
-];
+    function ignition() {
+        const btn = document.getElementById('startBtn');
+        const status = document.getElementById('statusText');
+        
+        // Efeito de ligar
+        btn.classList.add('on-fire');
+        status.innerText = "CHECKING...";
+        status.style.color = "#22ff88";
+        status.style.textShadow = "0 0 20px #22ff88";
 
-const COLOR_MAP = {
-  red:    'lit-red',
-  amber:  'lit-amber',
-  green:  'lit-green',
-  blue:   'lit-blue',
-  orange: 'lit-orange',
-  cyan:   'lit-cyan',
-};
+        // Acende tudo rapidinho (check)
+        const boxes = document.querySelectorAll('.light-box');
+        boxes.forEach(box => box.classList.add('active'));
 
-const GLOW_MAP = {
-  red:    'glow-red',
-  amber:  'glow-amber',
-  green:  'glow-green',
-  blue:   'glow-blue',
-  orange: 'glow-orange',
-  cyan:   'glow-cyan',
-};
-
-/* ─────────────────────────────
-   QUIZ DATA
-───────────────────────────── */
-const QUESTIONS = [
-  {
-    iid:'battery', color:'red',
-    q:'O que indica a luz de bateria acesa enquanto você dirige?',
-    opts:['Bateria fraca, normal ao ligar','Falha no alternador ou bateria','Hora de trocar o óleo','Sistema de freios com problema'],
-    ans:1,
-    tip:'Indica falha no alternador ou na bateria. Continue dirigindo e o carro pode parar por falta de energia. Pare em local seguro e procure assistência.',
-  },
-  {
-    iid:'oil', color:'red',
-    q:'A luz de óleo acendeu vermelha em movimento. O que fazer?',
-    opts:['Ignorar e continuar dirigindo','Adicionar água no radiador','Parar imediatamente e desligar o motor','Acelerar para normalizar a pressão'],
-    ans:2,
-    tip:'Com baixa pressão de óleo, o motor pode sofrer danos sérios em segundos. Pare imediatamente, desligue e verifique o nível de óleo.',
-  },
-  {
-    iid:'temp', color:'red',
-    q:'A luz de temperatura ficou vermelha. Qual a ação correta?',
-    opts:['Ligar o ar-condicionado no máximo','Desligar o AC, ligar o aquecedor e parar em segurança','Adicionar água fria no radiador quente','Aumentar a velocidade para ventilar mais'],
-    ans:1,
-    tip:'Desligar o AC reduz carga no motor; ligar o aquecedor dissipa calor do motor para a cabine. Abrir o radiador quente causa perigo de queimadura — espere esfriar.',
-  },
-  {
-    iid:'fuel', color:'amber',
-    q:'Com a luz de combustível acesa, qual a autonomia típica restante?',
-    opts:['Menos de 10 km','Entre 50 e 80 km','Mais de 200 km','Varia, mas o carro para imediatamente'],
-    ans:1,
-    tip:'A maioria dos veículos tem entre 50–80 km de autonomia na reserva. Evite andar com pouco combustível regularmente — pode danificar a bomba de combustível.',
-  },
-  {
-    iid:'check', color:'amber',
-    q:'O Check Engine acende laranja e fica estável. O que isso significa?',
-    opts:['O motor está superaquecendo agora','Uma falha foi detectada pela central eletrônica','O carro precisa de revisão de pneus','É normal após ligar o motor'],
-    ans:1,
-    tip:'Luz estável = falha detectada, mas não emergência imediata. Leve a uma oficina para leitura do código de erro (OBD). Se piscar, é falha grave — pare.',
-  },
-  {
-    iid:'abs', color:'amber',
-    q:'O ABS (Anti-lock Braking System) serve para:',
-    opts:['Aumentar a força de frenagem total','Evitar travamento das rodas e manter a direção','Reduzir o consumo de combustível','Controlar o diferencial traseiro'],
-    ans:1,
-    tip:'O ABS impede que as rodas travem em frenagem brusca, permitindo que o motorista continue dirigindo o veículo. Você vai sentir vibração no pedal — é normal.',
-  },
-  {
-    iid:'airbag', color:'red',
-    q:'A luz do airbag ficou acesa permanentemente após ligar. O que pode acontecer?',
-    opts:['O airbag vai inflar sozinho durante a viagem','O airbag pode não disparar em caso de acidente','O sistema de freios está comprometido','É apenas aviso de manutenção programada'],
-    ans:1,
-    tip:'Com a luz de airbag acesa, o sistema está com falha e pode não funcionar em uma colisão. Procure diagnóstico imediato — é uma questão de segurança crítica.',
-  },
-  {
-    iid:'highbeam', color:'blue',
-    q:'Por que a luz de farol alto (azul) deve ser apagada ao encontrar outro veículo?',
-    opts:['Para economizar combustível','Para não ofuscar o outro motorista, causando risco','Para proteger a lâmpada do farol','Porque prejudica o GPS'],
-    ans:1,
-    tip:'O farol alto pode ofuscar o motorista no sentido contrário por até 400 m, causando acidentes graves. Use o farol baixo sempre que houver outro veículo próximo.',
-  },
-  {
-    iid:'tpms', color:'amber',
-    q:'O TPMS acendeu. A calibragem recomendada para pneus é verificada:',
-    opts:['Apenas quando o pneu furar','Com o pneu frio, antes de rodar','Com o pneu quente após rodar 50 km','Uma vez por ano na revisão'],
-    ans:1,
-    tip:'A pressão deve ser verificada com os pneus frios (parado há pelo menos 3h). Calibragem incorreta aumenta consumo, reduz aderência e acelera desgaste.',
-  },
-  {
-    iid:'esp', color:'amber',
-    q:'A luz do ESP pisca durante uma curva. O que está acontecendo?',
-    opts:['Falha no sistema elétrico','O sistema está controlando a instabilidade do veículo ativamente','O câmbio automático mudou de marcha','O pneu traseiro furou'],
-    ans:1,
-    tip:'O ESP (Electronic Stability Program) intervém aplicando freios individualmente para evitar derrapagens. Se piscar constantemente, reduza a velocidade — o carro está no limite.',
-  },
-];
-
-/* ─────────────────────────────
-   BUILD WARNING GRID
-───────────────────────────── */
-const litSet = new Set();
-
-function buildGrid() {
-  const grid = document.getElementById('warn-grid');
-  grid.innerHTML = '';
-  INDICATORS.forEach(ind => {
-    const cell = document.createElement('div');
-    cell.className = 'warn-cell';
-    cell.id = 'cell-' + ind.id;
-    cell.onclick = () => toggleLight(ind.id);
-    cell.innerHTML = `
-      <div class="warn-icon-wrap" id="icon-${ind.id}">
-        <span style="font-size:18px; line-height:1;">${ind.emoji}</span>
-      </div>
-      <span class="warn-name">${ind.label}</span>
-    `;
-    grid.appendChild(cell);
-  });
-}
-
-function setLight(id, on) {
-  const ind = INDICATORS.find(i => i.id === id);
-  if (!ind) return;
-  const cell = document.getElementById('cell-' + id);
-  if (!cell) return;
-  const litClass = COLOR_MAP[ind.color] || 'lit-amber';
-  if (on) {
-    cell.classList.add(litClass);
-    litSet.add(id);
-  } else {
-    cell.classList.remove(litClass);
-    litSet.delete(id);
-  }
-}
-
-function toggleLight(id) {
-  setLight(id, !litSet.has(id));
-}
-
-/* ─────────────────────────────
-   GAUGES
-───────────────────────────── */
-function buildTicks(svgId, count, numericMax, labels) {
-  const svg = document.getElementById(svgId + '-ticks');
-  const cx = 100, cy = 100, r = 80;
-  const startAngle = -130, endAngle = 130;
-  for (let i = 0; i <= count; i++) {
-    const angle = startAngle + (endAngle - startAngle) * (i / count);
-    const rad = angle * Math.PI / 180;
-    const isMajor = i % (count / (labels.length - 1)) === 0;
-    const len = isMajor ? 12 : 6;
-    const x1 = cx + (r - 4) * Math.cos(rad);
-    const y1 = cy + (r - 4) * Math.sin(rad);
-    const x2 = cx + (r - 4 - len) * Math.cos(rad);
-    const y2 = cy + (r - 4 - len) * Math.sin(rad);
-    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-    line.setAttribute('class','gauge-tick');
-    if (isMajor) line.setAttribute('stroke-width','1.5');
-    svg.appendChild(line);
-    if (isMajor && labels.length) {
-      const li = Math.round(i / (count / (labels.length - 1)));
-      const tx = cx + (r - 24) * Math.cos(rad);
-      const ty = cy + (r - 24) * Math.sin(rad);
-      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-      t.setAttribute('x', tx); t.setAttribute('y', ty);
-      t.setAttribute('class','gauge-tick-label');
-      t.textContent = labels[li] !== undefined ? labels[li] : '';
-      svg.appendChild(t);
+        setTimeout(() => {
+            status.innerText = "READY TO DRIVE";
+            boxes.forEach(box => box.classList.remove('active'));
+        }, 1500);
     }
-  }
-}
 
-function setGauge(prefix, value, maxValue, totalDash) {
-  const fraction = Math.min(value / maxValue, 1);
-  const dash = fraction * totalDash;
-  document.getElementById(prefix + '-fill').setAttribute('stroke-dasharray', dash + ' ' + totalDash);
-  document.getElementById(prefix + '-val').textContent = Math.round(value);
-  const angle = -130 + fraction * 260;
-  document.getElementById(prefix + '-needle').style.transform = `rotate(${angle}deg)`;
-}
-
-/* ─────────────────────────────
-   BOOT ANIMATION
-───────────────────────────── */
-function boot() {
-  buildTicks('speed', 40, 240, ['0','40','80','120','160','200','240']);
-  buildTicks('tacho', 40, 8, ['0','1','2','3','4','5','6','7','8']);
-
-  // Sweep needles on boot
-  let v = 0;
-  const sweepUp = setInterval(() => {
-    v += 4;
-    setGauge('speed', Math.min(v, 200), 240, 352);
-    setGauge('tacho', Math.min(v * 0.03, 6), 8, 352);
-    if (v >= 200) { clearInterval(sweepUp); setTimeout(sweepDown, 300); }
-  }, 18);
-
-  function sweepDown() {
-    let v2 = 200;
-    const sd = setInterval(() => {
-      v2 -= 5;
-      setGauge('speed', Math.max(v2, 0), 240, 352);
-      setGauge('tacho', Math.max(v2 * 0.012, 0), 8, 352);
-      if (v2 <= 0) { clearInterval(sd); idleAnimate(); }
-    }, 20);
-  }
-}
-
-/* idle fluctuation */
-function idleAnimate() {
-  let t = 0;
-  setInterval(() => {
-    t += 0.03;
-    const spd = 42 + Math.sin(t) * 3;
-    const rpm = 1.4 + Math.sin(t * 1.3) * 0.12;
-    setGauge('speed', spd, 240, 352);
-    setGauge('tacho', rpm, 8, 352);
-  }, 50);
-}
-
-/* ─────────────────────────────
-   QUIZ ENGINE
-───────────────────────────── */
-let qIdx = 0, score = 0, answered = false;
-
-function renderQ() {
-  answered = false;
-  const q = QUESTIONS[qIdx];
-  const ind = INDICATORS.find(i => i.id === q.iid);
-
-  document.getElementById('q-num').textContent =
-    'PERGUNTA ' + String(qIdx + 1).padStart(2,'0') + ' / ' + QUESTIONS.length;
-  document.getElementById('q-progress').style.width =
-    Math.round((qIdx / QUESTIONS.length) * 100) + '%';
-  document.getElementById('q-score').textContent = 'PONTOS: ' + score;
-  document.getElementById('q-text').textContent = q.q;
-
-  // icon preview
-  const iconEl = document.getElementById('q-icon');
-  iconEl.textContent = ind ? ind.emoji : '❓';
-  iconEl.className = 'quiz-icon-preview ' + (GLOW_MAP[q.color] || 'glow-amber');
-
-  // highlight on panel
-  INDICATORS.forEach(i => setLight(i.id, false));
-  setLight(q.iid, true);
-
-  // highlight cell
-  document.querySelectorAll('.warn-cell').forEach(c => c.classList.remove('quiz-highlight'));
-  const hc = document.getElementById('cell-' + q.iid);
-  if (hc) hc.classList.add('quiz-highlight');
-
-  // options
-  const optsDiv = document.getElementById('opts');
-  optsDiv.innerHTML = '';
-  q.opts.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.textContent = opt;
-    btn.onclick = () => answer(i);
-    optsDiv.appendChild(btn);
-  });
-
-  document.getElementById('feedback').className = 'feedback-box';
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('next-btn').className = 'next-btn';
-  document.getElementById('finish').className = 'finish-overlay';
-  document.getElementById('quiz-main').style.display = '';
-}
-
-function answer(chosen) {
-  if (answered) return;
-  answered = true;
-  const q = QUESTIONS[qIdx];
-  const btns = document.querySelectorAll('#opts .opt-btn');
-  btns.forEach((b, i) => {
-    b.disabled = true;
-    if (i === q.ans) b.classList.add('correct');
-    else if (i === chosen && chosen !== q.ans) b.classList.add('wrong');
-  });
-
-  const fb = document.getElementById('feedback');
-  if (chosen === q.ans) {
-    score++;
-    fb.className = 'feedback-box show ok';
-    fb.innerHTML = '<strong>✔ Correto!</strong> ' + q.tip;
-  } else {
-    fb.className = 'feedback-box show err';
-    fb.innerHTML = '<strong>✘ Errado.</strong> ' + q.tip;
-  }
-
-  document.getElementById('q-score').textContent = 'PONTOS: ' + score;
-  document.getElementById('next-btn').className = 'next-btn show';
-}
-
-function nextQ() {
-  qIdx++;
-  if (qIdx >= QUESTIONS.length) finish();
-  else renderQ();
-}
-
-function finish() {
-  document.getElementById('q-progress').style.width = '100%';
-  document.getElementById('quiz-main').style.display = 'none';
-  const pct = score / QUESTIONS.length;
-  const stars = pct >= 0.8 ? '⭐⭐⭐' : pct >= 0.5 ? '⭐⭐' : '⭐';
-  const msg = pct >= 0.8
-    ? 'Excelente! Você domina os instrumentos do painel. Direção segura!'
-    : pct >= 0.5
-    ? 'Bom resultado! Vale revisar os itens que errou.'
-    : 'Continue estudando — conhecer o painel salva vidas.';
-
-  document.getElementById('finish-stars').textContent = stars;
-  document.getElementById('finish-big').textContent = score + ' / ' + QUESTIONS.length;
-  document.getElementById('finish-sub').textContent = msg;
-  document.getElementById('finish').className = 'finish-overlay show';
-
-  // turn off all lights
-  INDICATORS.forEach(i => setLight(i.id, false));
-  document.querySelectorAll('.warn-cell').forEach(c => c.classList.remove('quiz-highlight'));
-}
-
-function restart() {
-  qIdx = 0; score = 0;
-  renderQ();
-}
-
-/* ─────────────────────────────
-   INIT
-───────────────────────────── */
-buildGrid();
-boot();
-renderQ();
+    function toggle(el, title, desc) {
+        // Alterna luz
+        el.classList.toggle('active');
+        
+        // Atualiza HUD
+        const status = document.getElementById('statusText');
+        if(el.classList.contains('active')) {
+            status.innerText = desc;
+            status.style.color = window.getComputedStyle(el.querySelector('svg')).fill;
+        } else {
+            status.innerText = "SISTEMA OK";
+            status.style.color = "#22ff88";
+        }
+    }
 </script>
+
 </body>
 </html>
