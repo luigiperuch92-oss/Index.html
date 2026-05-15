@@ -1,26 +1,55 @@
 using { /Fortnite.com/Devices }
+using { /Fortnite.com/UI }
 using { /Verse.org/Simulation }
-using { /UnrealEngine.com/Temporary/Diagnostics }
+using { /UnrealEngine.com/Temporary/UI }
+using { /UnrealEngine.com/Temporary/SpatialMath }
 
-# Nome do seu dispositivo personalizado
-painel_quiz_device := class(creative_device):
+quiz_ui_manager := class(creative_device):
 
-    @editable
-    LuzAlerta : creative_prop = creative_prop{} # O ícone no painel
-    @editable
-    BotaoRespostaCorreta : button_device = button_device{}
-    @editable
-    BotaoRespostaErrada : button_device = button_device{}
+    # Botões criados via código para clicar direto na tela
+    var ButtonA : button = button{}
+    var ButtonB : button = button{}
+    var ButtonC : button = button{}
+    
+    var MyCanvas : canvas = canvas{}
 
-    # Rodado quando o jogo começa
     OnBegin<override>() : void =
-        BotaoRespostaCorreta.InteractedWithEvent.Subscribe(AcertouResposta)
-        BotaoRespostaErrada.InteractedWithEvent.Subscribe(ErrouResposta)
+        # Pega o jogador do servidor
+        if (FirstPlayer := GetPlayspace().GetPlayers()[0], PlayerUI := GetPlayerUI[player[FirstPlayer]]):
+            ShowQuizUI(FirstPlayer, PlayerUI)
 
-    AcertouResposta(Agent : agent) : void =
-        # Lógica para quando o usuário acerta (ex: toca som de motor, luz fica verde)
-        Print("Parabéns! Você identificou a luz de pressão do óleo.")
+    ShowQuizUI(Player : agent, PlayerUI : player_ui) : void =
+        # Configurando os textos dos botões
+        ButtonA.SetText(StringToMessage("Pressão do Óleo"))
+        ButtonB.SetText(StringToMessage("Freio de Mão Acionado"))
+        ButtonC.SetText(StringToMessage("Falha no Alternador"))
+
+        # O que acontece quando o cara clica
+        ButtonA.OnClick().Subscribe(RespostaCerta)
+        ButtonB.OnClick().Subscribe(RespostaErrada)
+        ButtonC.OnClick().Subscribe(RespostaErrada)
+
+        # Desenhando a interface na tela (Intuitiva e centralizada)
+        set MyCanvas = canvas:
+            Slots := array:
+                canvas_slot:
+                    Anchors := anchors{Minimum := vector2{X:= 0.5, Y:= 0.7}, Maximum := vector2{X:= 0.5, Y:= 0.7}}
+                    Alignment := vector2{X:= 0.5, Y:= 0.5}
+                    Widget := stack_box:
+                        Orientation := orientation.Horizontal
+                        Slots := array:
+                            stack_box_slot{Widget := ButtonA, Padding := margin{Right := 20.0}}
+                            stack_box_slot{Widget := ButtonB, Padding := margin{Right := 20.0}}
+                            stack_box_slot{Widget := ButtonC}
         
-    ErrouResposta(Agent : agent) : void =
-        # Lógica para erro (ex: fumaça no motor ou som de erro)
-        Print("Ops! Essa luz indica um problema crítico no motor.")
+        # Adiciona a tela pro jogador e libera o mouse pra ele clicar
+        PlayerUI.AddWidget(MyCanvas, player_ui_slot{InputMode := ui_input_mode.All})
+
+    RespostaCerta(WidgetMessage : widget_message) : void =
+        Print("Acertou! Tocar som de sucesso e acender luz verde!")
+        # Aqui entra a lógica de trocar a luz e ir pra próxima pergunta
+
+    RespostaErrada(WidgetMessage : widget_message) : void =
+        Print("Errou! Tocar bipe de erro!")
+
+StringToMessage<local_native>(S:string) : message = external {}
