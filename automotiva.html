@@ -3,443 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador de Diagnóstico Automotivo Premium</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Simulador - Luzes Reais (CSS Sprite)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
 
 *{margin:0;padding:0;box-sizing:border-box;outline:none;}
-
 body{
-  background:#020202;
-  font-family:'Rajdhani',sans-serif;
-  color:#eee;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:16px;
-  background-image:radial-gradient(ellipse at 50% -20%,#2a1f0a 0%,#020202 70%);
+  background:#020202; font-family:'Rajdhani',sans-serif; color:#eee;
+  min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  padding:20px;
 }
 
-/* ===== HEADER ===== */
 .header{
-  font-family:'Orbitron',monospace;
-  font-size:clamp(10px,1.5vw,13px);
-  letter-spacing:6px;
-  color:#c8860a;
-  text-align:center;
-  margin-bottom:20px;
-  text-shadow:0 0 15px #c8860a;
-  text-transform:uppercase;
-  opacity:0.8;
+  font-family:'Orbitron',monospace; font-size:14px; letter-spacing:4px;
+  color:#c8860a; margin-bottom:20px;
 }
 
-/* ===== DASHBOARD SHELL ===== */
-.dash-shell{
-  width:100%;
-  max-width:960px;
-  background:
-    linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(10,10,10,1) 50%, rgba(5,5,5,1) 100%),
-    radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
-  border:1px solid #222;
-  border-radius:30px 30px 50px 50px;
-  padding:25px 30px;
-  box-shadow:
-    0 20px 50px -10px rgba(0,0,0,0.8),
-    inset 0 2px 3px rgba(255,255,255,0.03),
-    inset 0 -5px 15px rgba(0,0,0,0.5);
-  position:relative;
-  margin-bottom:20px;
-}
-
-.dash-shell::before{
-  content:'';
-  position:absolute;
-  top:0;left:50px;right:50px;height:1px;
-  background:linear-gradient(90deg,transparent,#c8860a66,transparent);
-}
-
-.dash-interior{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
-/* ===== VELOCÍMETROS ===== */
-.speedo{
-  width:clamp(110px,22vw,170px);
-  height:clamp(110px,22vw,170px);
-  flex-shrink:0;
-  position:relative;
-  filter: drop-shadow(0 0 10px rgba(200,134,10,0.1));
-}
-
-.speedo svg{width:100%;height:100%;}
-line.needle { stroke-linecap: round; filter: drop-shadow(0px 3px 2px rgba(0,0,0,0.6)); }
-
-/* ===== LIGHTS PANEL ===== */
 .lights-panel{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  gap:9px;
-  padding: 10px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 15px;
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+  display:flex; flex-wrap:wrap; gap:10px; max-width: 800px; justify-content:center;
+  background: #111; padding: 20px; border-radius: 10px; border: 1px solid #333;
 }
 
-.lights-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  justify-content:center;
-}
-
-/* ===== BOTÕES DE LUZ (AGORA COM FONTES VETORIAIS) ===== */
 .light-btn{
-  width:clamp(38px,6.5vw,52px);
-  height:clamp(38px,6.5vw,52px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  border:1px solid #111;
-  background: linear-gradient(145deg, #0a0a0a, #111);
-  cursor:pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position:relative;
-  flex-shrink:0;
-  overflow: hidden;
-  color: rgba(255,255,255,0.05); /* Desligado */
-  font-size: clamp(18px, 3.5vw, 22px);
+  width: 50px; height: 50px;
+  background: #000; border: 1px solid #222; border-radius: 8px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: 0.3s;
 }
 
-.light-btn .icon-wrap {
-  position: relative;
-  z-index: 2;
-  transition: all 0.3s;
+/* ===== TÉCNICA CSS SPRITE ===== */
+.icon-real {
+  width: 35px; /* Tamanho da "janela" do recorte */
+  height: 35px;
+  /* ATENÇÃO: O nome da imagem deve ser exatamente o arquivo que você tem na pasta */
+  background-image: url('Captura de tela 2026-05-15 091926.jpg'); 
+  background-size: 800px; /* Ajuste isso se a sua imagem original for muito grande ou pequena */
+  background-repeat: no-repeat;
+  
+  /* Deixa a luz "apagada" por padrão */
+  filter: brightness(0.15) grayscale(1); 
+  transition: all 0.2s ease-in-out;
 }
 
-.light-btn::after {
-  content: ''; position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.7), inset 0 -1px 2px rgba(255,255,255,0.02);
-  border-radius: 8px; z-index: 1;
+/* Quando o botão ganha a classe .active, a luz "acende" */
+.light-btn.active .icon-real {
+  filter: brightness(1.2) grayscale(0) drop-shadow(0 0 8px rgba(255,255,255,0.4));
 }
 
-/* ===== BLOOM EMISSIVO (LUZ ACESA) ===== */
-.light-btn.active.c-red{
-  border-color:#ff4444; background:#1a0000; color:#ff4444;
-  box-shadow: 0 0 5px rgba(255,68,68,0.5), inset 0 0 10px rgba(255,68,68,0.2);
-}
-.light-btn.active.c-red .icon-wrap { filter: drop-shadow(0 0 8px #ff4444); }
+/* Mapeamento de Coordenadas (X, Y)
+  Você altera esses valores de px para mover a imagem e centralizar o ícone certo.
+  X negativo move a imagem para a esquerda. Y negativo move para cima.
+*/
+.ico-1  { background-position: -20px -20px; }   /* Ex: Farol neblina (1) */
+.ico-2  { background-position: -70px -20px; }   /* Ex: Direção (2) */
+.ico-4  { background-position: -170px -20px; }  /* Ex: Esguicho (4) */
+.ico-21 { background-position: -200px -80px; }  /* Ex: TPMS (21) */
+.ico-57 { background-position: -120px -250px; } /* Ex: Óleo (57) */
+.ico-62 { background-position: -700px -250px; } /* Ex: Motor (62) */
 
-.light-btn.active.c-amber{
-  border-color:#ffcc00; background:#2a2000; color:#ffcc00;
-  box-shadow: 0 0 5px rgba(255,204,0,0.5), inset 0 0 10px rgba(255,204,0,0.2);
-}
-.light-btn.active.c-amber .icon-wrap { filter: drop-shadow(0 0 8px #ffcc00); }
-
-.light-btn.active.c-green{
-  border-color:#00ff88; background:#001a0d; color:#00ff88;
-  box-shadow: 0 0 5px rgba(0,255,136,0.5), inset 0 0 10px rgba(0,255,136,0.2);
-}
-.light-btn.active.c-green .icon-wrap { filter: drop-shadow(0 0 8px #00ff88); }
-
-.light-btn.active.c-blue{
-  border-color:#00ccff; background:#00151a; color:#00ccff;
-  box-shadow: 0 0 5px rgba(0,204,255,0.5), inset 0 0 10px rgba(0,204,255,0.2);
-}
-.light-btn.active.c-blue .icon-wrap { filter: drop-shadow(0 0 8px #00ccff); }
-
-.light-btn.done { color: rgba(255,255,255,0.03); border-color:#111; background: #080808; cursor:default; box-shadow: none; }
-.light-btn.done .icon-wrap { filter: none; }
-
-@keyframes lightblink{0%,100%{opacity:1} 60%{opacity:0.6}}
-.light-btn.active .icon-wrap { animation:lightblink 1.6s ease-in-out infinite; }
-
-/* ===== PROGRESS BAR ===== */
-.prog-wrap{
-  width:100%; max-width:960px; height:4px; background:#0a0a0a;
-  border-radius:2px; margin-bottom:15px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
-}
-.prog-fill{ height:100%; background:linear-gradient(90deg,#8a5c05,#c8860a); transition:width .5s ease; box-shadow:0 0 10px #c8860a; }
-
-/* ===== QUIZ CARD ===== */
+/* Cartão do quiz e botões */
 .quiz-card{
-  width:100%; max-width:960px;
-  background: linear-gradient(160deg, #0e0e12 0%, #08080a 100%);
-  border:1px solid #1a1a22; border-radius:20px; padding:30px;
-  min-height:210px; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.8); position:relative;
+  margin-top:20px; width:100%; max-width:800px; background: #0a0a0a;
+  border:1px solid #222; border-radius:10px; padding:20px; text-align:center;
 }
-
-.q-phase{ font-family:'Orbitron',monospace; font-size:11px; letter-spacing:4px; margin-bottom:15px; text-transform:uppercase; font-weight:700; color:#555; }
-.q-big-icon{ margin-bottom:15px; font-size:65px; display:flex; align-items:center; justify-content:center; }
-.q-name{ font-family:'Orbitron',monospace; font-size:clamp(18px,4.5vw,30px); font-weight:900; letter-spacing:1px; margin-bottom:10px; color:#fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-.q-desc{ font-size:clamp(15px,2.8vw,19px); color:#aab; max-width:620px; line-height:1.6; }
-
-.q-detail-box{ background: rgba(0, 10, 20, 0.5); border:1px solid #003355; border-radius:12px; padding:20px 25px; margin-top:20px; max-width:680px; text-align:left; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
-.q-detail-title{ font-family:'Orbitron',monospace; font-size:10px; letter-spacing:3px; color:#00ccff; margin-bottom:10px; font-weight:700; }
-.q-detail-text{ font-size:15px; color:#b0c4de; line-height:1.8; }
-
-.idle-txt{ color:#444; font-size:19px; letter-spacing:1px; animation:lightblink 2s ease-in-out infinite; }
-.score{ position:absolute; top:18px; right:22px; font-family:'Orbitron',monospace; font-size:12px; color:#333; letter-spacing:2px; }
-
-/* ===== BOTOES ===== */
-.btn-row{ display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; justify-content:center; }
-.btn{ font-family:'Orbitron',monospace; font-size:11px; letter-spacing:2px; padding:15px 30px; border:none; border-radius:8px; cursor:pointer; text-transform:uppercase; font-weight:700; transition:all 0.2s; position:relative; overflow:hidden; }
-.btn::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transition: 0.5s; }
-.btn:hover::before { left: 100%; }
-.btn:hover{ transform:translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-.btn:active{ transform:translateY(1px); }
-
-.btn-reveal{ background: linear-gradient(145deg, #2a1f00, #1e1600); color:#ffcc00; border:1px solid #4a3300; }
-.btn-next{ background: linear-gradient(145deg, #001f2a, #001520); color:#00ccff; border:1px solid #00335a; }
-.btn-restart{ background: linear-gradient(145deg, #2a0000, #1a0000); color:#ff4444; border:1px solid #660000; }
-
-.tc-red{color:#ff4444; filter:drop-shadow(0 0 15px rgba(255,68,68,0.8));}
-.tc-amber{color:#ffcc00; filter:drop-shadow(0 0 15px rgba(255,204,0,0.8));}
-.tc-green{color:#00ff88; filter:drop-shadow(0 0 15px rgba(0,255,136,0.8));}
-.tc-blue{color:#00ccff; filter:drop-shadow(0 0 15px rgba(0,204,255,0.8));}
-
-@keyframes slidein{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.slidein{ animation:slidein 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.q-name{ font-family:'Orbitron'; font-size:24px; color:#fff; margin-bottom:10px; }
+.q-desc{ color:#aaa; font-size:16px; }
+.btn{ 
+  margin-top:15px; padding:10px 20px; font-family:'Orbitron'; 
+  background:#c8860a; color:#000; border:none; cursor:pointer; font-weight:bold;
+}
 </style>
 </head>
 <body>
 
-<div class="header">⬡ SISTEMA DE DIAGNÓSTICO AUTOMOTIVO — QUIZ DE LUZES ⬡</div>
+<div class="header">SISTEMA COM LUZES REAIS (SPRITE MAPPING)</div>
 
-<div class="dash-shell">
-  <div class="dash-interior">
-    <div class="speedo">
-      <svg viewBox="0 0 160 160">
-        <defs>
-          <radialGradient id="gradGauge" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-            <stop offset="70%" style="stop-color:#050505;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#111;stop-opacity:1" />
-          </radialGradient>
-        </defs>
-        <circle cx="80" cy="80" r="78" fill="url(#gradGauge)" stroke="#1a1a1a" stroke-width="1.5"/>
-        <circle cx="80" cy="80" r="70" fill="none" stroke="#222" stroke-width="0.5"/>
-        <g stroke="#444" stroke-width="1.5">
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-104 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(-52 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(0 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(52 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/><line x1="80" y1="12" x2="80" y2="20" stroke-width="1" transform="rotate(104 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(130 80 80)"/>
-        </g>
-        <text x="80" y="55" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">60</text>
-        <text x="112" y="63" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">80</text>
-        <text x="128" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">100</text>
-        <text x="48" y="63" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">40</text>
-        <text x="32" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">20</text>
-        <path d="M 115 35 A 70 70 0 0 1 138 115" fill="none" stroke="#400" stroke-width="4" stroke-linecap="round"/>
-        <line class="needle" x1="80" y1="80" x2="80" y2="22" stroke="#c8860a" stroke-width="2.5" transform="rotate(-60 80 80)"/>
-        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/><circle cx="80" cy="80" r="3" fill="#c8860a"/>
-        <text x="80" y="110" fill="#444" font-size="9" text-anchor="middle" font-family="Orbitron,monospace">RPM×1000</text>
-      </svg>
-    </div>
-
-    <div class="lights-panel" id="lightsPanel"></div>
-
-    <div class="speedo">
-      <svg viewBox="0 0 160 160">
-        <circle cx="80" cy="80" r="78" fill="url(#gradGauge)" stroke="#1a1a1a" stroke-width="1.5"/>
-        <circle cx="80" cy="80" r="70" fill="none" stroke="#222" stroke-width="0.5"/>
-        <g stroke="#444" stroke-width="1.5">
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-130 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(-78 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(-26 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(26 80 80)"/>
-          <line x1="80" y1="12" x2="80" y2="22" transform="rotate(78 80 80)"/><line x1="80" y1="12" x2="80" y2="22" transform="rotate(130 80 80)"/>
-        </g>
-        <text x="80" y="50" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">100</text>
-        <text x="114" y="60" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">120</text>
-        <text x="130" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">140</text>
-        <text x="46" y="60" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">80</text>
-        <text x="30" y="90" fill="#555" font-size="10" text-anchor="middle" font-family="monospace" font-weight="bold">60</text>
-        <line class="needle" x1="80" y1="80" x2="80" y2="22" stroke="#c8860a" stroke-width="2.5" transform="rotate(-100 80 80)"/>
-        <circle cx="80" cy="80" r="7" fill="#111" stroke="#333" stroke-width="1"/><circle cx="80" cy="80" r="3" fill="#c8860a"/>
-        <text x="80" y="110" fill="#444" font-size="9" text-anchor="middle" font-family="Orbitron,monospace">KM/H</text>
-        <rect x="50" y="118" width="60" height="16" rx="3" fill="#050505" stroke="#1a1a1a"/>
-        <text x="80" y="129" fill="#222" font-size="7" text-anchor="middle" font-family="monospace">000024 KM</text>
-      </svg>
-    </div>
-  </div>
+<div class="lights-panel" id="panel">
+  <div class="light-btn" onclick="activate(this, 'Farol de Neblina', 'Luz de neblina dianteira acesa.')"><div class="icon-real ico-1"></div></div>
+  <div class="light-btn" onclick="activate(this, 'Direção Elétrica', 'Falha no sistema de direção assistida.')"><div class="icon-real ico-2"></div></div>
+  <div class="light-btn" onclick="activate(this, 'Água do Para-brisa', 'Nível baixo no reservatório de esguicho.')"><div class="icon-real ico-4"></div></div>
+  <div class="light-btn" onclick="activate(this, 'TPMS (Pneu)', 'Pressão baixa detectada em algum pneu.')"><div class="icon-real ico-21"></div></div>
+  <div class="light-btn" onclick="activate(this, 'Pressão de Óleo', 'Pare o carro! Falta de lubrificação no motor.')"><div class="icon-real ico-57"></div></div>
+  <div class="light-btn" onclick="activate(this, 'Check Engine', 'Anomalia no motor ou sistema de injeção.')"><div class="icon-real ico-62"></div></div>
 </div>
 
-<div class="prog-wrap"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-
-<div class="quiz-card" id="quizCard">
-  <div class="score" id="scoreTxt">0 / 24</div>
-  <div class="idle-txt">⬆ Clique em qualquer luz ou use o sorteio</div>
-</div>
-<div class="btn-row" id="btnRow">
-  <button class="btn btn-next slidein" onclick="nextAuto()">Sortear Luz Aleatória</button>
+<div class="quiz-card">
+  <div class="q-name" id="nomeLuz">CLIQUE EM UMA LUZ ACIMA</div>
+  <div class="q-desc" id="descLuz">O diagnóstico aparecerá aqui.</div>
 </div>
 
 <script>
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(type, freq, duration, volume = 0.1) {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-  osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-  osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
-  gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-  osc.stop(audioCtx.currentTime + duration);
-}
-
-// Adeus links quebrados. Mapeamento usando FontAwesome e Fontes padrão (100% à prova de falhas)
-const ICONS = {
-  motor: '<i class="fa-solid fa-triangle-exclamation" style="position:relative"><i class="fa-solid fa-gear" style="position:absolute;font-size:0.5em;top:10px;left:-6px;"></i></i>',
-  oleo: '<i class="fa-solid fa-oil-can"></i>',
-  temp: '<i class="fa-solid fa-temperature-half"></i>',
-  bateria: '<i class="fa-solid fa-car-battery"></i>',
-  freio: '<b style="font-family:sans-serif;font-size:0.85em">( ! )</b>',
-  abs: '<b style="font-family:sans-serif;font-size:0.65em">(ABS)</b>',
-  airbag: '<i class="fa-solid fa-user-shield"></i>',
-  combustivel: '<i class="fa-solid fa-gas-pump"></i>',
-  direcao: '<i class="fa-solid fa-dharmachakra"></i>',
-  tpms: '<b style="font-family:sans-serif;font-size:0.75em">(!_)</b>',
-  esp: '<i class="fa-solid fa-car-burst"></i>',
-  catalisador: '<i class="fa-solid fa-fire-flame-curved"></i>',
-  w4d: '<b style="font-family:sans-serif;font-size:0.75em">4x4</b>',
-  seta_esq: '<i class="fa-solid fa-arrows-left-right"></i>',
-  luz_alta: '<i class="fa-solid fa-lightbulb"></i>',
-  dpf: '<i class="fa-solid fa-smog"></i>',
-  agua_comb: '<i class="fa-solid fa-fill-drip"></i>',
-  servico: '<i class="fa-solid fa-wrench"></i>',
-  cinto: '<i class="fa-solid fa-user-slash"></i>',
-  porta: '<i class="fa-solid fa-door-open"></i>',
-  cambio: '<b style="font-family:sans-serif;font-size:0.85em">⚙!</b>',
-  injecao: '<i class="fa-solid fa-bolt"></i>',
-  suspensao: '<i class="fa-solid fa-car-side"></i>',
-  check: '<i class="fa-solid fa-circle-exclamation"></i>'
-};
-
-const LIGHTS = [
-  {id:'motor', icon:'motor', color:'c-amber', nome:'CHECK ENGINE', desc:'Falha detectada no motor ou sistema de emissões pelo ECM.', det:'Indica que o módulo ECM detectou código de falha. Pode ser tampão frouxo, sensor O2, bobina ou catalisador. Leve para leitura OBD-II.'},
-  {id:'oleo', icon:'oleo', color:'c-red', nome:'PRESSÃO DE ÓLEO', desc:'Pressão de lubrificação insuficiente — risco grave ao motor.', det:'EMERGÊNCIA total. Motor sem lubrificação adequada pode fundir em minutos. Pare imediatamente e verifique o nível de óleo.'},
-  {id:'temp', icon:'temp', color:'c-red', nome:'SUPERAQUECIMENTO', desc:'Temperatura do motor acima do limite seguro.', det:'Causas: falta de fluido, termostato travado, ventoinha ou radiador. Pare e NUNCA abra o radiador enquanto estiver quente.'},
-  {id:'bateria', icon:'bateria', color:'c-red', nome:'FALHA DE CARGA', desc:'Alternador não carrega a bateria — carro pode parar em minutos.', det:'Desligue AC e faróis (se possível). Problema na correia, escovas ou regulador do alternador.'},
-  {id:'freio', icon:'freio', color:'c-red', nome:'SISTEMA DE FREIOS', desc:'Freio de mão acionado ou fluido de freio com nível baixo.', det:'Se o freio de mão estiver solto, o fluido está perigosamente baixo ou há vazamento. Freios podem falhar.'},
-  {id:'abs', icon:'abs', color:'c-amber', nome:'FALHA NO ABS', desc:'Antitravamento desativado — maior risco em frenagem brusca.', det:'Sem o ABS, a roda pode travar em frenagens de emergência. A frenagem normal continua funcionando.'},
-  {id:'airbag', icon:'airbag', color:'c-red', nome:'FALHA NO AIRBAG', desc:'Sistema SRS com defeito.', det:'Em impacto, o airbag pode não abrir. Exige diagnóstico especializado com scanner.'},
-  {id:'combustivel', icon:'combustivel', color:'c-amber', nome:'COMBUSTÍVEL', desc:'Reserva ativada.', det:'Dirigir com tanque muito vazio prejudica a bomba, que usa o próprio combustível como lubrificante.'},
-  {id:'direcao', icon:'direcao', color:'c-amber', nome:'DIREÇÃO ELÉTRICA', desc:'Falha na direção assistida.', det:'EPS com defeito. O volante exigirá muita força física para manobrar.'},
-  {id:'tpms', icon:'tpms', color:'c-amber', nome:'PNEU MURCHO', desc:'Pressão baixa detectada pelo TPMS.', det:'Aumenta consumo e risco de estouro. Calibre os pneus o mais rápido possível.'},
-  {id:'esp', icon:'esp', color:'c-amber', nome:'CONTROLE DE ESTAB.', desc:'ESP ativado ou desligado.', det:'Piscando: atuando para corrigir trajetória. Fixo: sistema desligado ou em falha.'},
-  {id:'catalisador', icon:'catalisador', color:'c-amber', nome:'CATALISADOR', desc:'Superaquecimento no escapamento.', det:'Combustível não queimado está chegando no escape. Risco de derreter a colmeia interna do catalisador.'},
-  {id:'w4d', icon:'w4d', color:'c-amber', nome:'TRAÇÃO 4×4', desc:'Modo 4WD ativo ou em falha.', det:'Não use 4x4 bloqueado no asfalto seco, pois causa desgaste prematuro e travamento em curvas.'},
-  {id:'seta', icon:'seta_esq', color:'c-green', nome:'PISCA / SETA', desc:'Indicador de direção acionado.', det:'Se piscar rápido demais, indica que alguma lâmpada do circuito queimou.'},
-  {id:'luzalta', icon:'luz_alta', color:'c-blue', nome:'FAROL ALTO', desc:'Luz alta acionada.', det:'Uso exclusivo para vias não iluminadas sem veículos vindo no sentido contrário.'},
-  {id:'dpf', icon:'dpf', color:'c-amber', nome:'FILTRO DPF', desc:'Filtro de partículas entupido (Diesel).', det:'Exige condução constante em rodovia para queima da fuligem (regeneração).'},
-  {id:'agua', icon:'agua_comb', color:'c-amber', nome:'ÁGUA NO DIESEL', desc:'Contaminação detectada.', det:'Água corrói bicos injetores de alta pressão. Drene o filtro separador imediatamente.'},
-  {id:'servico', icon:'servico', color:'c-amber', nome:'REVISÃO', desc:'Manutenção programada.', det:'Tempo ou quilometragem para troca de óleo e filtros foi atingida.'},
-  {id:'cinto', icon:'cinto', color:'c-red', nome:'CINTO DESATADO', desc:'Ocupante sem cinto de segurança.', det:'Risco gravíssimo. Afivele imediatamente.'},
-  {id:'porta', icon:'porta', color:'c-red', nome:'PORTA ABERTA', desc:'Porta ou porta-malas destravado.', det:'Pare em segurança e verifique o fechamento de todas as portas.'},
-  {id:'cambio', icon:'cambio', color:'c-amber', nome:'FALHA NO CÂMBIO', desc:'Transmissão em modo de segurança.', det:'O câmbio pode travar em 3ª marcha para evitar danos catastróficos. Vá à oficina.'},
-  {id:'injecao', icon:'injecao', color:'c-amber', nome:'INJEÇÃO ELETR.', desc:'Falha elétrica / injeção.', det:'Pode causar cortes na aceleração ou alto consumo. Requer diagnóstico computadorizado.'},
-  {id:'suspensao', icon:'suspensao', color:'c-amber', nome:'SUSPENSÃO', desc:'Falha no ajuste eletrônico.', det:'Em carros com suspensão pneumática, indica problemas no compressor ou bolsas de ar.'},
-  {id:'check', icon:'check', color:'c-amber', nome:'AVISO GERAL', desc:'Alerta genérico no computador.', det:'Leia a mensagem descritiva no painel central LCD do veículo.'}
-];
-
-let currentIdx = -1; let doneSet = new Set(); let phase = 'idle';
-let shuffled = shuffle([...Array(LIGHTS.length).keys()]); let shPos = 0;
-
-function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
-
-const panel = document.getElementById('lightsPanel');
-const rows = [8,8,8];
-let li = 0;
-rows.forEach(cnt=>{
-  const row = document.createElement('div'); row.className = 'lights-row';
-  for(let i=0; i<cnt && li<LIGHTS.length; i++, li++){
-    const l = LIGHTS[li];
-    const btn = document.createElement('div');
-    btn.className = `light-btn ${l.color}`;
-    btn.id = `lb-${li}`;
-    btn.title = l.nome;
-    // Puxando do dicionário de ícones vetoriais
-    btn.innerHTML = `<div class="icon-wrap">${ICONS[l.icon]}</div>`;
-    btn.addEventListener('click',()=>activate(li));
-    row.appendChild(btn);
-  }
-  panel.appendChild(row);
-});
-
-function activate(idx){
-  if(phase === 'revealed' && currentIdx !== idx && !doneSet.has(currentIdx)) return;
-  playSound('sine', 600, 0.08, 0.04);
-  document.querySelectorAll('.light-btn.active').forEach(b=>b.classList.remove('active'));
-  const btn = document.getElementById(`lb-${idx}`);
-  if(!btn) return;
-  btn.classList.add('active');
-  currentIdx = idx; phase = 'question'; render();
-}
-
-function nextAuto(){
-  if(doneSet.size >= LIGHTS.length){ showComplete(); return; }
-  if(shPos >= shuffled.length){ shPos=0; shuffled=shuffle([...Array(LIGHTS.length).keys()]); }
-  let next = shuffled[shPos++]; let tries=0;
-  while(doneSet.has(next) && tries<LIGHTS.length){
-    if(shPos>=shuffled.length){shPos=0;shuffled=shuffle([...Array(LIGHTS.length).keys()]);}
-    next=shuffled[shPos++]; tries++;
-  }
-  activate(next);
-}
-
-function reveal(){
-  phase = 'revealed'; doneSet.add(currentIdx);
-  const btn = document.getElementById(`lb-${currentIdx}`);
-  btn.classList.add('done');
-  playSound('triangle', 400, 0.2, 0.08); setTimeout(()=>playSound('triangle', 600, 0.3, 0.06), 120);
-  render();
-}
-
-function showComplete(){
-  playSound('square', 300, 0.6, 0.1);
-  const card = document.getElementById('quizCard'); const btnRow = document.getElementById('btnRow');
-  document.getElementById('progFill').style.width = '100%';
-  card.innerHTML = `<div class="q-phase slidein" style="color:#00ff88">★ CHECK-UP COMPLETO ★</div><div class="q-name slidein" style="color:#fff">DIAGNÓSTICO FINALIZADO</div><div class="q-desc slidein">Todos os sistemas operacionais e mapeados com sucesso!</div>`;
-  btnRow.innerHTML = `<button class="btn btn-restart slidein" onclick="location.reload()">Reiniciar Simulador</button>`;
-}
-
-function render(){
-  const card = document.getElementById('quizCard'); const btnRow = document.getElementById('btnRow');
-  const scoreTxt = document.getElementById('scoreTxt');
-  if(scoreTxt) scoreTxt.innerText = `${doneSet.size} / ${LIGHTS.length}`;
-  document.getElementById('progFill').style.width = `${(doneSet.size / LIGHTS.length) * 100}%`;
-
-  const l = LIGHTS[currentIdx];
-  const iconColor = l.color.replace('c-', 'tc-');
-
-  if(phase === 'question'){
-    card.innerHTML = `
-      <div class="score">${doneSet.size} / ${LIGHTS.length}</div>
-      <div class="q-phase slidein" style="color:#ffcc00">⚠ ALERTA ATIVO ⚠</div>
-      <div class="q-big-icon ${iconColor} slidein">${ICONS[l.icon]}</div>
-      <div class="q-name slidein" style="color:#fff">IDENTIFIQUE O SÍMBOLO</div>
-      <div class="q-desc slidein">Tente nomear a função desta luz antes de revelar a resposta.</div>
-    `;
-    btnRow.innerHTML = `<button class="btn btn-reveal slidein" onclick="reveal()">Revelar Resposta</button><button class="btn btn-next slidein" onclick="nextAuto()">Pular Luz</button>`;
-  }
-  else if(phase === 'revealed'){
-    card.innerHTML = `
-      <div class="score">${doneSet.size} / ${LIGHTS.length}</div>
-      <div class="q-phase slidein" style="color:#00ff88">✔ SISTEMA IDENTIFICADO</div>
-      <div class="q-big-icon ${iconColor} slidein">${ICONS[l.icon]}</div>
-      <div class="q-name ${iconColor} slidein">${l.nome}</div>
-      <div class="q-desc slidein">${l.desc}</div>
-      <div class="q-detail-box slidein"><div class="q-detail-title">AÇÃO RECOMENDADA:</div><div class="q-detail-text">${l.det}</div></div>
-    `;
-    btnRow.innerHTML = `<button class="btn btn-next slidein" onclick="nextAuto()">Próximo Alerta ➔</button>`;
-  }
+function activate(btnElement, nome, desc) {
+  // Apaga todas as luzes
+  document.querySelectorAll('.light-btn').forEach(b => b.classList.remove('active'));
+  
+  // Acende a luz clicada (o CSS cuida de remover os filtros cinza/escuros)
+  btnElement.classList.add('active');
+  
+  // Atualiza o painel de texto
+  document.getElementById('nomeLuz').innerText = nome;
+  document.getElementById('descLuz').innerText = desc;
 }
 </script>
+
 </body>
 </html>
