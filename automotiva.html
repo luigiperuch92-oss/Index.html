@@ -3,369 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz — Luzes do Painel</title>
+<title>Dashboard Pro - Ultra Realism</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
-  :root {
-    --bg:#0a0a0f; --panel2:#16161f; --border:#2a2a3a;
-    --amber:#ffb300; --red:#ff3030; --green:#00e676;
-    --orange:#ff6d00; --white:#e0e8ff;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;overflow-x:hidden}
-  header{text-align:center;margin-bottom:24px}
-  header h1{font-family:'Orbitron',monospace;font-size:clamp(1.4rem,4vw,2.2rem);font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);text-shadow:0 0 24px #ffb30066,0 0 6px #ffb300aa}
-  header p{font-size:1rem;color:#8888aa;margin-top:4px;letter-spacing:.06em}
-  .dashboard{background:radial-gradient(ellipse at 50% 30%,#1c1c2e 0%,#0d0d15 70%);border:2px solid var(--border);border-radius:24px;padding:28px 32px 24px;width:100%;max-width:720px;box-shadow:0 0 0 1px #ffffff08 inset,0 8px 60px #00000099;position:relative;overflow:hidden}
-  .dashboard::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,#ffffff04 3px,#ffffff04 4px);pointer-events:none}
-  .icons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:14px;margin-bottom:8px}
-  .icon-card{background:#0c0c16;border:1.5px solid #252535;border-radius:14px;padding:16px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s,box-shadow .2s;position:relative}
-  .icon-card.highlight{border-color:var(--c,#ffb300);box-shadow:0 0 18px var(--c,#ffb300),0 0 6px var(--c,#ffb300) inset;animation:pulse-icon 1.6s ease-in-out infinite}
-  @keyframes pulse-icon{0%,100%{box-shadow:0 0 10px var(--c),0 0 4px var(--c) inset}50%{box-shadow:0 0 28px var(--c),0 0 10px var(--c) inset}}
-  .icon-svg{width:64px;height:64px;display:flex;align-items:center;justify-content:center}
-  .icon-svg svg{width:100%;height:100%}
-  .icon-label{font-family:'Orbitron',monospace;font-size:.45rem;letter-spacing:.08em;color:#55556a;text-align:center;text-transform:uppercase}
-  .icon-card.highlight .icon-label{color:var(--c)}
-  .quiz-box{width:100%;max-width:720px;margin-top:24px}
-  .question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .q-number{font-family:'Orbitron',monospace;font-size:.75rem;color:#55556a;letter-spacing:.1em}
-  .progress-bar{height:4px;background:#1e1e2e;border-radius:2px;flex:1;margin:0 14px;overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--orange));border-radius:2px;transition:width .5s ease;box-shadow:0 0 8px var(--amber)}
-  .score-display{font-family:'Orbitron',monospace;font-size:.75rem;color:var(--amber);letter-spacing:.08em}
-  .question-card{background:var(--panel2);border:1.5px solid var(--border);border-radius:18px;padding:28px 28px 24px;box-shadow:0 4px 30px #00000060}
-  .question-text{font-size:clamp(1rem,2.5vw,1.25rem);font-weight:600;color:var(--white);margin-bottom:22px;line-height:1.5;letter-spacing:.03em}
-  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:480px){.options{grid-template-columns:1fr}.icons-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}}
-  .option-btn{background:#0e0e1a;border:1.5px solid #252535;border-radius:12px;padding:14px 16px;color:var(--white);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;text-align:left;cursor:pointer;transition:all .18s;letter-spacing:.03em;display:flex;align-items:center;gap:10px}
-  .option-btn:hover:not(:disabled){border-color:var(--amber);color:var(--amber);background:#1a1600;box-shadow:0 0 12px #ffb30033}
-  .option-btn.correct{border-color:var(--green);background:#001a08;color:var(--green);box-shadow:0 0 16px #00e67633}
-  .option-btn.wrong{border-color:var(--red);background:#1a0000;color:var(--red);box-shadow:0 0 16px #ff303033}
-  .option-btn:disabled{cursor:default}
-  .opt-letter{font-family:'Orbitron',monospace;font-size:.7rem;width:24px;height:24px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.7}
-  .feedback{margin-top:16px;padding:14px 18px;border-radius:12px;font-size:.97rem;font-weight:600;letter-spacing:.02em;line-height:1.5;display:none}
-  .feedback.show{display:block}
-  .feedback.ok{background:#001a0a;border:1px solid var(--green);color:var(--green)}
-  .feedback.fail{background:#1a0000;border:1px solid var(--red);color:#ff8080}
-  .next-btn{margin-top:18px;width:100%;padding:14px;background:linear-gradient(135deg,#1a1100,#2a1e00);border:1.5px solid var(--amber);border-radius:12px;color:var(--amber);font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;display:none;transition:all .2s;box-shadow:0 0 14px #ffb30022}
-  .next-btn:hover{background:linear-gradient(135deg,#2a1e00,#3a2c00);box-shadow:0 0 28px #ffb30055}
-  .next-btn.show{display:block}
-  .result-screen{text-align:center;padding:40px 20px;display:none}
-  .result-screen.show{display:block}
-  .result-emoji{font-size:4rem;margin-bottom:16px}
-  .result-title{font-family:'Orbitron',monospace;font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin-bottom:8px}
-  .result-score{font-family:'Orbitron',monospace;font-size:clamp(2.5rem,8vw,4rem);font-weight:900;color:var(--amber);text-shadow:0 0 30px var(--amber);margin:12px 0}
-  .result-msg{font-size:1.1rem;color:#8888aa;max-width:400px;margin:0 auto 28px;line-height:1.6}
-  .restart-btn{padding:16px 40px;background:linear-gradient(135deg,#1a1100,#2a1e00);border:2px solid var(--amber);border-radius:14px;color:var(--amber);font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s}
-  .restart-btn:hover{box-shadow:0 0 30px #ffb30066;transform:scale(1.03)}
-  body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,#00000018 2px,#00000018 3px);pointer-events:none;z-index:999}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+
+:root {
+    --bg-black: #020202;
+    --card-bg: rgba(15, 15, 20, 0.95);
+    --led-red: #ff3131;
+    --led-amber: #ff9d00;
+    --led-green: #22ff88;
+    --led-blue: #22ccff;
+    --border-glass: rgba(255, 255, 255, 0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+body {
+    background: var(--bg-black);
+    background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000 80%);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* PAINEL PRINCIPAL */
+.dashboard-container {
+    width: 950px;
+    padding: 30px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-glass);
+    border-radius: 35px;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(255,255,255,0.02);
+    display: grid;
+    grid-template-columns: 220px 1fr 220px;
+    gap: 20px;
+    position: relative;
+}
+
+/* DISPLAY CENTRAL */
+.center-hud {
+    grid-column: 2;
+    background: #000;
+    border: 2px solid #111;
+    border-radius: 20px;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(0,0,0,1);
+    border: 1px solid rgba(255,157,0,0.2);
+}
+
+.scanline {
+    position: absolute; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 50%);
+    background-size: 100% 4px; pointer-events: none; opacity: 0.2;
+}
+
+.hud-title { font-family: 'Orbitron'; font-size: 12px; color: #555; letter-spacing: 3px; margin-bottom: 20px; }
+.hud-main-text { font-family: 'Orbitron'; font-size: 28px; color: var(--led-amber); text-shadow: 0 0 15px var(--led-amber); text-align: center; }
+
+/* SLOTS DE LUZES */
+.side-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.light-box {
+    aspect-ratio: 1;
+    background: linear-gradient(145deg, #111, #080808);
+    border: 1px solid #1a1a1a;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+    padding: 10px;
+}
+
+.light-box svg {
+    width: 40px;
+    height: 40px;
+    fill: rgba(255,255,255,0.05); /* Desligado */
+    transition: 0.3s;
+}
+
+.light-label {
+    font-size: 9px;
+    color: #444;
+    margin-top: 8px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* EFEITOS DE ATIVAÇÃO (GLOW REAL) */
+.active.c-red svg { fill: var(--led-red); filter: drop-shadow(0 0 8px var(--led-red)) drop-shadow(0 0 15px var(--led-red)); }
+.active.c-amber svg { fill: var(--led-amber); filter: drop-shadow(0 0 8px var(--led-amber)) drop-shadow(0 0 15px var(--led-amber)); }
+.active.c-green svg { fill: var(--led-green); filter: drop-shadow(0 0 8px var(--led-green)) drop-shadow(0 0 15px var(--led-green)); }
+.active.c-blue svg { fill: var(--led-blue); filter: drop-shadow(0 0 8px var(--led-blue)) drop-shadow(0 0 15px var(--led-blue)); }
+
+.active .light-label { color: #eee; }
+
+/* BOTÃO START ENGINE */
+.start-btn-container {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.start-btn {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #331111, #110000);
+    border: 5px solid #222;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.start-btn:hover { border-color: var(--led-red); }
+.start-btn:active { transform: scale(0.95); }
+
+.start-btn .text-top { font-family: 'Orbitron'; font-size: 14px; color: #fff; font-weight: 900; }
+.start-btn .text-bot { font-size: 10px; color: #666; margin-top: 5px; }
+
+.on-fire {
+    box-shadow: 0 0 40px rgba(255, 49, 49, 0.4), inset 0 0 20px var(--led-red);
+    border-color: var(--led-red) !important;
+}
+
 </style>
 </head>
 <body>
-<header>
-  <h1>⚠ Quiz do Painel</h1>
-  <p>Você sabe o que cada luz significa?</p>
-</header>
-<div class="dashboard">
-  <div class="icons-grid" id="iconsGrid"></div>
-</div>
-<div class="quiz-box">
-  <div id="quizArea">
-    <div class="question-header">
-      <span class="q-number" id="qNumber">PERGUNTA 1/10</span>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <span class="score-display" id="scoreDisplay">0 pts</span>
+
+<div class="dashboard-container">
+    
+    <div class="side-panel">
+        <div class="light-box c-amber" onclick="toggle(this, 'MOTOR', 'FALHA DE INJEÇÃO')">
+            <svg viewBox="0 0 512 512">
+                <path d="M480 192h-32l-16-48h-64l-16 48h-32V128h-64v64h-32l-16-48h-64l-16 48H32v192h96v32h256v-32h96V192zM128 320a32 32 0 1 1 32-32 32 32 0 0 1-32 32z"/>
+            </svg>
+            <div class="light-label">Motor</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'ÓLEO', 'PRESSÃO DE ÓLEO CRÍTICA')">
+            <svg viewBox="0 0 512 512">
+                <path d="M480 320c-32 0-64-16-96-32s-64-32-96-32-64 16-96 32-64 32-96 32V160h64l32-64h128l32 64h64v160zM64 416h384v32H64v-32zM448 96l64 64-64 64V96z"/>
+            </svg>
+            <div class="light-label">Óleo</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'TEMPERATURA', 'SUPERAQUECIMENTO')">
+            <svg viewBox="0 0 512 512">
+                <path d="M256 64a48 48 0 0 0-48 48v192a80 80 0 1 0 96 0V112a48 48 0 0 0-48-48zm0 288a32 32 0 1 1 32-32 32 32 0 0 1-32 32zM128 416h256v32H128z"/>
+            </svg>
+            <div class="light-label">Temp</div>
+        </div>
+        <div class="light-box c-amber" onclick="toggle(this, 'TPMS', 'PNEU MURCHO DETECTADO')">
+            <svg viewBox="0 0 512 512">
+                <path d="M128 448c-35 0-64-29-64-64v-64c0-106 86-192 192-192s192 86 192 192v64c0 35-29 64-64 64H128zm128-288c-18 0-32 14-32 32v96c0 18 14 32 32 32s32-14 32-32v-96c0-18-14-32-32-32zm0 192a24 24 0 1 0 0 48 24 24 0 0 0 0-48zM64 352h32v96H64zM416 352h32v96h-32z"/>
+            </svg>
+            <div class="light-label">Pneu</div>
+        </div>
     </div>
-    <div class="question-card">
-      <div class="question-text" id="questionText">Carregando...</div>
-      <div class="options" id="optionsArea"></div>
-      <div class="feedback" id="feedback"></div>
-      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">PRÓXIMA →</button>
+
+    <div class="center-hud" id="hud">
+        <div class="scanline"></div>
+        <div class="hud-title">COMPUTADOR DE BORDO</div>
+        <div class="hud-main-text" id="statusText">SISTEMA OFFLINE</div>
+        <div style="color:#555; margin-top:10px; font-size:12px;">PRESSIONE START</div>
     </div>
-  </div>
-  <div class="result-screen" id="resultScreen">
-    <div class="result-emoji" id="resultEmoji">🏁</div>
-    <div class="result-title" id="resultTitle">Resultado</div>
-    <div class="result-score" id="resultScoreVal"></div>
-    <div class="result-msg" id="resultMsg"></div>
-    <button class="restart-btn" onclick="restartQuiz()">↺ JOGAR NOVAMENTE</button>
-  </div>
+
+    <div class="side-panel">
+        <div class="light-box c-amber" onclick="toggle(this, 'DIREÇÃO', 'FALHA DIREÇÃO HIDRÁULICA')">
+            <svg viewBox="0 0 512 512">
+                <path d="M256 0a256 256 0 1 0 0 512 256 256 0 0 0 0-512zm0 464a208 208 0 1 1 0-416 208 208 0 0 1 0 416zm-32-256v96a32 32 0 0 0 64 0v-96a32 32 0 0 0-64 0zm0 160a32 32 0 1 0 64 0 32 32 0 0 0-64 0z"/>
+                <circle cx="256" cy="256" r="64" fill="none" stroke="currentColor" stroke-width="32" opacity="0.2"/>
+            </svg>
+            <div class="light-label">Direção</div>
+        </div>
+        <div class="light-box c-green" onclick="toggle(this, 'NEBLINA', 'FAROL AUXILIAR ATIVO')">
+            <svg viewBox="0 0 512 512">
+                <path d="M192 128a128 128 0 0 1 0 256H32V128h160m32-32H0v320h224A160 160 0 0 0 224 96zM320 160h160v32H320zm0 96h160v32H320zm0 96h160v32H320z"/>
+                <path d="M256 128l32 256" stroke="currentColor" stroke-width="20" stroke-linecap="round"/>
+            </svg>
+            <div class="light-label">Neblina</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'AIRBAG', 'FALHA NO SISTEMA SRS')">
+            <svg viewBox="0 0 512 512">
+                <circle cx="160" cy="160" r="48"/>
+                <path d="M64 416h192v32H64zM224 256a96 96 0 1 1-192 0h192zM384 128a64 64 0 1 0 0 128 64 64 0 0 0 0-128z"/>
+            </svg>
+            <div class="light-label">Airbag</div>
+        </div>
+        <div class="light-box c-red" onclick="toggle(this, 'CINTO', 'AFIVELE OS CINTOS')">
+            <svg viewBox="0 0 512 512">
+                <circle cx="256" cy="128" r="48"/>
+                <path d="M160 448h192v32H160zm160-256H192l-64 192h256zM128 256l256 128" stroke="currentColor" stroke-width="20"/>
+            </svg>
+            <div class="light-label">Cinto</div>
+        </div>
+    </div>
+
+    <div class="start-btn-container">
+        <button class="start-btn" id="startBtn" onclick="ignition()">
+            <div class="text-top">START</div>
+            <div class="text-bot">ENGINE</div>
+        </button>
+    </div>
+
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-//  ÍCONES — Baseados nos símbolos ISO reais de painéis de carro
-//  Desenhados como silhuetas sólidas (filled), idênticos aos reais
-// ═══════════════════════════════════════════════════════════
-const ICONS = [
+    function ignition() {
+        const btn = document.getElementById('startBtn');
+        const status = document.getElementById('statusText');
+        
+        btn.classList.add('on-fire');
+        status.innerText = "CHECKING...";
+        status.style.color = "#22ff88";
+        status.style.textShadow = "0 0 20px #22ff88";
 
-  // BATERIA: retângulo horizontal com terminal + saliente na direita e raio sólido
-  { id:'battery', color:'#ff3030', label:'Bateria', svg:`
-    <svg viewBox="0 0 100 55" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="8" width="78" height="38" rx="5" stroke="currentColor" stroke-width="4.5" fill="none"/>
-      <rect x="80" y="17" width="16" height="20" rx="4" fill="currentColor"/>
-      <text x="10" y="22" fill="currentColor" font-size="10" font-family="Arial" font-weight="900">+</text>
-      <text x="58" y="46" fill="currentColor" font-size="12" font-family="Arial" font-weight="900">−</text>
-      <polygon points="52,11 36,30 47,30 30,44 53,44 53,34 62,34 62,11" fill="currentColor"/>
-    </svg>`
-  },
+        const boxes = document.querySelectorAll('.light-box');
+        boxes.forEach(box => box.classList.add('active'));
 
-  // ÓLEO: lata de óleo ISO — corpo, spout curvo, alça e gota
-  { id:'oil', color:'#ff6d00', label:'Óleo', svg:`
-    <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18,72 L18,40 Q18,30 28,30 L52,30 Q60,30 60,40 L60,72 Q60,80 52,80 L26,80 Q18,80 18,72Z" stroke="currentColor" stroke-width="4" fill="none"/>
-      <rect x="20" y="55" width="38" height="2" rx="1" fill="currentColor" opacity="0.3"/>
-      <path d="M52,30 L52,20 L68,12 L78,12" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="74" y="7" width="14" height="10" rx="3" fill="currentColor"/>
-      <path d="M80,22 Q80,34 73,37 Q66,34 66,22 Q70,14 80,22Z" fill="currentColor"/>
-      <path d="M18,44 Q8,44 8,56 Q8,68 18,68" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
-      <ellipse cx="39" cy="55" rx="11" ry="14" fill="currentColor" opacity="0.25"/>
-    </svg>`
-  },
+        setTimeout(() => {
+            status.innerText = "READY TO DRIVE";
+            boxes.forEach(box => box.classList.remove('active'));
+        }, 1500);
+    }
 
-  // TEMPERATURA: termômetro centrado com ondas de líquido dos dois lados — ISO exato
-  { id:'temp', color:'#ff3030', label:'Temperatura', svg:`
-    <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4,28 Q9,21 14,28 Q19,35 24,28" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <path d="M4,42 Q9,35 14,42 Q19,49 24,42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <path d="M76,28 Q81,21 86,28 Q91,35 96,28" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <path d="M76,42 Q81,35 86,42 Q91,49 96,42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-      <rect x="42" y="8" width="16" height="46" rx="8" stroke="currentColor" stroke-width="4" fill="none"/>
-      <rect x="46" y="30" width="8" height="24" rx="4" fill="currentColor"/>
-      <circle cx="50" cy="68" r="13" stroke="currentColor" stroke-width="4" fill="none"/>
-      <circle cx="50" cy="68" r="8" fill="currentColor"/>
-    </svg>`
-  },
-
-  // COMBUSTÍVEL: bomba de gasolina ISO — corpo, visor, mangueira, bocal
-  { id:'fuel', color:'#ffb300', label:'Combustível', svg:`
-    <svg viewBox="0 0 90 95" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="14" width="44" height="70" rx="6" stroke="currentColor" stroke-width="4" fill="none"/>
-      <rect x="4" y="82" width="44" height="6" rx="3" fill="currentColor"/>
-      <rect x="12" y="22" width="28" height="20" rx="3" stroke="currentColor" stroke-width="3" fill="none"/>
-      <rect x="13" y="23" width="13" height="18" rx="2" fill="currentColor" opacity="0.7"/>
-      <text x="33" y="37" fill="currentColor" font-size="12" font-family="Arial" font-weight="900" text-anchor="middle">E</text>
-      <path d="M48,24 L60,24 L60,14 Q60,6 68,6 L68,58 Q68,66 76,66 L84,66" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="80" y="59" width="9" height="16" rx="3.5" fill="currentColor"/>
-      <polygon points="58,8 54,18 68,18 64,8" fill="currentColor"/>
-    </svg>`
-  },
-
-  // CINTO: pessoa sentada com cabeça, tronco e faixa diagonal — ISO real
-  { id:'seatbelt', color:'#ff3030', label:'Cinto', svg:`
-    <svg viewBox="0 0 80 95" xmlns="http://www.w3.org/2000/svg">
-      <rect x="60" y="6" width="8" height="62" rx="4" fill="currentColor"/>
-      <rect x="18" y="66" width="52" height="8" rx="4" fill="currentColor"/>
-      <circle cx="36" cy="17" r="11" fill="currentColor"/>
-      <path d="M24,29 L20,66 L54,66 L50,29Z" fill="currentColor"/>
-      <line x1="50" y1="29" x2="22" y2="62" stroke="#0a0a0f" stroke-width="8" stroke-linecap="round"/>
-      <line x1="22" y1="62" x2="52" y2="62" stroke="#0a0a0f" stroke-width="8" stroke-linecap="round"/>
-      <rect x="17" y="58" width="12" height="9" rx="2.5" fill="currentColor" stroke="#0a0a0f" stroke-width="1"/>
-    </svg>`
-  },
-
-  // ABS: pneu/roda com texto ABS e raios curtos cardeais
-  { id:'abs', color:'#ffb300', label:'ABS', svg:`
-    <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="45" cy="45" r="38" stroke="currentColor" stroke-width="10" fill="none"/>
-      <circle cx="45" cy="45" r="20" stroke="currentColor" stroke-width="3" fill="none"/>
-      <text x="45" y="53" text-anchor="middle" fill="currentColor" font-size="19" font-family="Arial" font-weight="900" letter-spacing="1">ABS</text>
-      <line x1="45" y1="7" x2="45" y2="22" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <line x1="45" y1="68" x2="45" y2="83" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <line x1="7" y1="45" x2="22" y2="45" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-      <line x1="68" y1="45" x2="83" y2="45" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
-    </svg>`
-  },
-
-  // AIRBAG/SRS: pessoa de perfil sentada com grande bola inflada e volante abaixo
-  { id:'airbag', color:'#ff3030', label:'Airbag', svg:`
-    <svg viewBox="0 0 100 95" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="28" cy="42" r="26" stroke="currentColor" stroke-width="4.5" fill="none"/>
-      <circle cx="28" cy="42" r="10" stroke="currentColor" stroke-width="2.5" fill="none"/>
-      <line x1="28" y1="68" x2="28" y2="80" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-      <ellipse cx="28" cy="84" rx="18" ry="6" stroke="currentColor" stroke-width="4" fill="none"/>
-      <circle cx="76" cy="16" r="10" fill="currentColor"/>
-      <path d="M76,26 L76,54 L92,54" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="86" y="36" width="8" height="38" rx="4" fill="currentColor"/>
-      <rect x="58" y="70" width="38" height="8" rx="4" fill="currentColor"/>
-    </svg>`
-  },
-
-  // CHECK ENGINE: silhueta ISO do motor — bloco, velas, escapamento, admissão
-  { id:'engine', color:'#ffb300', label:'Motor', svg:`
-    <svg viewBox="0 0 110 80" xmlns="http://www.w3.org/2000/svg">
-      <rect x="22" y="22" width="56" height="36" rx="6" stroke="currentColor" stroke-width="4.5" fill="none"/>
-      <rect x="30" y="10" width="12" height="12" rx="3" stroke="currentColor" stroke-width="3.5" fill="none"/>
-      <rect x="56" y="10" width="12" height="12" rx="3" stroke="currentColor" stroke-width="3.5" fill="none"/>
-      <path d="M78,30 L94,30 L94,46" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <rect x="88" y="44" width="14" height="7" rx="3" fill="currentColor"/>
-      <path d="M22,40 L8,40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-      <rect x="2" y="34" width="10" height="12" rx="3" fill="currentColor"/>
-      <line x1="50" y1="58" x2="50" y2="70" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-      <rect x="43" y="69" width="14" height="7" rx="3" fill="currentColor"/>
-      <circle cx="50" cy="40" r="7" stroke="currentColor" stroke-width="3" fill="none"/>
-    </svg>`
-  },
-
-  // TPMS: seção transversal do pneu com aro espesso, "!" acima e seta pra baixo
-  { id:'tpms', color:'#ffb300', label:'Pneu', svg:`
-    <svg viewBox="0 0 90 96" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="45" cy="60" r="32" stroke="currentColor" stroke-width="10" fill="none"/>
-      <circle cx="45" cy="60" r="12" stroke="currentColor" stroke-width="3" fill="none"/>
-      <circle cx="45" cy="60" r="4.5" fill="currentColor"/>
-      <rect x="41" y="4" width="8" height="24" rx="4" fill="currentColor"/>
-      <circle cx="45" cy="34" r="5" fill="currentColor"/>
-      <polygon points="45,40 37,55 53,55" fill="currentColor"/>
-    </svg>`
-  },
-
-  // FREIO: círculo com !, parênteses externos curvos — símbolo ISO do freio
-  { id:'brake', color:'#ff3030', label:'Freio', svg:`
-    <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
-      <path d="M14,12 Q2,45 14,78" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-      <path d="M76,12 Q88,45 76,78" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-      <circle cx="45" cy="45" r="28" stroke="currentColor" stroke-width="5" fill="none"/>
-      <rect x="40" y="20" width="10" height="28" rx="5" fill="currentColor"/>
-      <circle cx="45" cy="62" r="6.5" fill="currentColor"/>
-    </svg>`
-  },
-
-  // PORTA ABERTA: carro visto de cima com porta esquerda aberta em ângulo real
-  { id:'dooropen', color:'#ff3030', label:'Porta', svg:`
-    <svg viewBox="0 0 100 85" xmlns="http://www.w3.org/2000/svg">
-      <rect x="14" y="8" width="56" height="68" rx="9" stroke="currentColor" stroke-width="4" fill="none"/>
-      <line x1="18" y1="24" x2="66" y2="24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-      <line x1="18" y1="60" x2="66" y2="60" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-      <line x1="70" y1="30" x2="70" y2="54" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3" opacity="0.5"/>
-      <path d="M70,30 L94,18 L96,48 L70,54Z" stroke="currentColor" stroke-width="4" fill="none" stroke-linejoin="round"/>
-      <circle cx="70" cy="30" r="5" fill="currentColor"/>
-      <line x1="88" y1="24" x2="88" y2="36" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
-      <polygon points="82,8 78,18 86,18" fill="currentColor"/>
-    </svg>`
-  },
-
-  // DIREÇÃO ELÉTRICA EPS: volante com 3 raios reais + raio elétrico externo
-  { id:'eps', color:'#ffb300', label:'Direção', svg:`
-    <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="48" cy="46" r="36" stroke="currentColor" stroke-width="6" fill="none"/>
-      <circle cx="48" cy="46" r="11" stroke="currentColor" stroke-width="4" fill="none"/>
-      <line x1="48" y1="10" x2="48" y2="35" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>
-      <line x1="16" y1="66" x2="40" y2="53" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>
-      <line x1="80" y1="66" x2="56" y2="53" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"/>
-      <polygon points="88,14 80,28 87,28 76,46 95,46 95,32 102,32 102,14" fill="currentColor"/>
-    </svg>`
-  },
-
-];
-
-// ═══════════════════════════════════════════════════════════
-//  PERGUNTAS
-// ═══════════════════════════════════════════════════════════
-const QUESTIONS = [
-  { iconId:'battery', question:'A luz de bateria acende enquanto você dirige. O que isso indica?', options:['O nível de combustível está baixo','Falha no sistema de carga elétrica do carro','A bateria está totalmente carregada','O ar-condicionado consome muita energia'], correct:1, explanation:'Luz de bateria acesa em movimento = falha no alternador ou correia. O sistema de carga parou de funcionar. O carro pode parar em breve — pare em local seguro imediatamente.' },
-  { iconId:'oil', question:'A luz de pressão de óleo acendeu. Qual é a atitude correta?', options:['Ignorar — é só aviso de troca de óleo','Parar o carro e desligar o motor imediatamente','Aumentar a rotação para circular o óleo','Verificar apenas na próxima revisão'], correct:1, explanation:'Luz de pressão de óleo é emergência crítica! Continuar dirigindo pode destruir o motor em poucos minutos. Pare imediatamente e desligue.' },
-  { iconId:'temp', question:'O termômetro do motor está na zona vermelha. O que fazer?', options:['Ligar o aquecedor para ajudar a resfriar','Acelerar para circular o ar no motor','Parar, desligar e deixar esfriar naturalmente','Trocar para neutro e deixar em marcha lenta'], correct:2, explanation:'Motor superaquecido = emergência. Pare em segurança e desligue. NUNCA abra o radiador quente — pressão alta causa queimaduras graves.' },
-  { iconId:'fuel', question:'A luz de combustível piscou. Quantos km você ainda tem, em média?', options:['Entre 5 e 10 km','Entre 30 e 80 km (varia por modelo)','O carro para imediatamente','Mais de 200 km com segurança'], correct:1, explanation:'A reserva geralmente é de 30–80 km, variando por modelo. Abasteça logo para não danificar a bomba de combustível, que se resfria com o próprio combustível.' },
-  { iconId:'seatbelt', question:'A luz de cinto continua acesa após colocar o seu. O que aconteceu?', options:['Sensor do banco do passageiro detectou peso sem cinto','O airbag está com defeito','É uma luz decorativa sem função','O ABS está desativado'], correct:0, explanation:'O sensor detectou peso no banco do passageiro (bolsa, caixa) sem cinto colocado. Remova o objeto ou coloque o cinto no banco para desligar o aviso.' },
-  { iconId:'abs', question:'A luz do ABS acendeu. O que isso significa para a frenagem?', options:['Os freios param de funcionar completamente','Frenagem normal mantida, mas sem anti-bloqueio','O carro vai frear sozinho em emergências','O freio de mão está puxado'], correct:1, explanation:'Com ABS desativado, os freios convencionais ainda funcionam. Mas em freada brusca as rodas podem travar e o carro derrapar. Vá à oficina verificar.' },
-  { iconId:'engine', question:'A luz "check engine" acendeu. O que ela indica?', options:['O motor está pegando fogo — saia imediatamente','Apenas aviso de revisão programada','Uma falha detectada pelo sistema OBD do motor','O filtro de ar está entupido'], correct:2, explanation:'O sistema OBD detectou uma falha — pode ser simples (tampa do combustível) ou grave (catalisador). É necessário ler o código com scanner para diagnosticar.' },
-  { iconId:'tpms', question:'A luz do TPMS acende. Qual a ação correta?', options:['Furar o pneu para igualar a pressão','Verificar a pressão de todos os pneus logo','Acelerar para equalizar a pressão pelo atrito','É aviso estético — sem urgência real'], correct:1, explanation:'TPMS indica pneu com pressão abaixo do ideal. Pneu murcho aumenta consumo, prejudica a dirigibilidade e pode causar acidentes. Calibre na próxima parada segura.' },
-  { iconId:'brake', question:'A luz vermelha de freio com "!" acendeu. O que NÃO é uma causa possível?', options:['Freio de mão puxado','Nível de fluido de freio baixo','Falha grave no sistema de freios','Porta traseira aberta'], correct:3, explanation:'A luz de freio pode indicar freio de mão acionado, fluido baixo ou falha grave. Porta aberta tem ícone próprio. Se não for o freio de mão, pare e verifique urgente!' },
-  { iconId:'airbag', question:'A luz do airbag/SRS está acesa. O que representa em caso de acidente?', options:['O airbag vai disparar ao menor impacto','O airbag pode NÃO disparar quando necessário','Está em modo de alta sensibilidade','É só aviso de manutenção sem consequências'], correct:1, explanation:'Com a luz do airbag acesa, o sistema SRS está com falha. O airbag pode NÃO disparar em um acidente real, deixando você sem essa proteção. Vá à oficina urgente.' },
-];
-
-// ═══ ESTADO ═══
-let currentQ=0, score=0, answered=false;
-const shuffled=[...QUESTIONS].sort(()=>Math.random()-.5);
-
-function renderDashboard(highlightId=null){
-  const grid=document.getElementById('iconsGrid');
-  grid.innerHTML='';
-  ICONS.forEach(icon=>{
-    const card=document.createElement('div');
-    card.className='icon-card'+(highlightId===icon.id?' highlight':'');
-    card.style.setProperty('--c',icon.color);
-    const col=highlightId===icon.id?icon.color:'#3a3a55';
-    card.innerHTML=`<div class="icon-svg" style="color:${col}">${icon.svg}</div><div class="icon-label">${icon.label}</div>`;
-    grid.appendChild(card);
-  });
-}
-
-function renderQuestion(){
-  answered=false;
-  const q=shuffled[currentQ], total=shuffled.length;
-  document.getElementById('qNumber').textContent=`PERGUNTA ${currentQ+1}/${total}`;
-  document.getElementById('progressFill').style.width=`${(currentQ/total)*100}%`;
-  document.getElementById('scoreDisplay').textContent=`${score} pts`;
-  document.getElementById('questionText').textContent=q.question;
-  renderDashboard(q.iconId);
-  const opts=document.getElementById('optionsArea');
-  opts.innerHTML='';
-  ['A','B','C','D'].forEach((ltr,i)=>{
-    const btn=document.createElement('button');
-    btn.className='option-btn';
-    btn.innerHTML=`<span class="opt-letter">${ltr}</span>${q.options[i]}`;
-    btn.onclick=()=>selectAnswer(i,btn);
-    opts.appendChild(btn);
-  });
-  document.getElementById('feedback').className='feedback';
-  document.getElementById('nextBtn').className='next-btn';
-}
-
-function selectAnswer(index,btn){
-  if(answered)return;
-  answered=true;
-  const q=shuffled[currentQ];
-  const allBtns=document.querySelectorAll('.option-btn');
-  allBtns.forEach(b=>b.disabled=true);
-  const fb=document.getElementById('feedback');
-  if(index===q.correct){
-    score++;
-    btn.classList.add('correct');
-    fb.className='feedback ok show';
-    fb.textContent='✓ Correto! — '+q.explanation;
-    document.getElementById('scoreDisplay').textContent=`${score} pts`;
-  } else {
-    btn.classList.add('wrong');
-    allBtns[q.correct].classList.add('correct');
-    fb.className='feedback fail show';
-    fb.textContent='✗ Errado! — '+q.explanation;
-  }
-  document.getElementById('nextBtn').className='next-btn show';
-}
-
-function nextQuestion(){
-  currentQ++;
-  if(currentQ>=shuffled.length)showResult();
-  else renderQuestion();
-}
-
-function showResult(){
-  document.getElementById('quizArea').style.display='none';
-  document.getElementById('resultScreen').className='result-screen show';
-  const total=shuffled.length, pct=Math.round((score/total)*100);
-  document.getElementById('resultScoreVal').textContent=`${score}/${total}`;
-  let emoji,title,msg,cor;
-  if(pct>=90){emoji='🏆';title='Especialista do Painel!';msg='Impressionante! Você conhece as luzes do seu carro como ninguém.';cor='#ffb300';}
-  else if(pct>=70){emoji='👨‍🔧';title='Bom Motorista!';msg='Boa pontuação! Revise os erros para ficar mais seguro.';cor='#00e676';}
-  else if(pct>=50){emoji='⚠️';title='Atenção Necessária!';msg='Conhecimento médio. Algumas luzes importantes passaram batido.';cor='#ff6d00';}
-  else{emoji='🚨';title='Zona de Perigo!';msg='Fique atento ao painel — as luzes existem para te proteger!';cor='#ff3030';}
-  document.getElementById('resultEmoji').textContent=emoji;
-  document.getElementById('resultTitle').textContent=title;
-  document.getElementById('resultTitle').style.color=cor;
-  document.getElementById('resultMsg').textContent=msg;
-  renderDashboard(null);
-}
-
-function restartQuiz(){
-  currentQ=0;score=0;
-  shuffled.sort(()=>Math.random()-.5);
-  document.getElementById('quizArea').style.display='block';
-  document.getElementById('resultScreen').className='result-screen';
-  renderQuestion();
-}
-
-renderDashboard();
-renderQuestion();
+    function toggle(el, title, desc) {
+        el.classList.toggle('active');
+        const status = document.getElementById('statusText');
+        if(el.classList.contains('active')) {
+            status.innerText = desc;
+            status.style.color = window.getComputedStyle(el.querySelector('svg')).fill;
+        } else {
+            status.innerText = "SISTEMA OK";
+            status.style.color = "#22ff88";
+        }
+    }
 </script>
+
 </body>
 </html>
